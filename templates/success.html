@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container text-center my-5">
+    <h2>Order Placed Successfully</h2>
+    <p>Your order has been placed with <strong>Cash on Delivery</strong>.</p>
+    <a href="{% url 'home' %}" class="btn btn-primary">Back to Home</a>
+</div>
+{% endblock %}
