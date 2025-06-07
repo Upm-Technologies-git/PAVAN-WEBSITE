@@ -143,3 +143,7 @@ JAZZMIN_SETTINGS = {
     "copyright" : "Wabicloting",
 }
 
+AUTHENTICATION_BACKENDS = [
+    'dressapp.backends.EmailBackend',  # Replace 'yourapp' with your app name
+    'django.contrib.auth.backends.ModelBackend',
+]

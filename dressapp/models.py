@@ -12,10 +12,11 @@ def getFileName(instance, filename):
 class Customer(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
     name = models.CharField(max_length=200, null=True)
+    phone = models.CharField(max_length=15, blank=True, null=True)
     email = models.CharField(max_length=200, unique=True, null=True)
 
     def __str__(self):
-        return self.name if self.name else "Customer"
+        return self.user.username 
 
 class Product(models.Model):
     name = models.CharField(max_length=200, null=True)
@@ -48,11 +49,12 @@ class Order(models.Model):
     complete = models.BooleanField(default=False, null=True, blank=False)
 
     def __str__(self):
-        return f"Order {self.order_number} - {self.payment_method}"
+        return f"Order {self.id}"
 
     @property
     def get_cart_total(self):
-        return sum(item.get_total for item in self.orderitem_set.all())
+        total = sum([item.get_total for item in self.orderitem_set.all()])
+        return total
 
     @property
     def get_cart_items(self):
@@ -65,8 +67,8 @@ class Order(models.Model):
 
 class OrderItem(models.Model):
     Product = models.ForeignKey(Product, on_delete=models.SET_NULL, blank=True, null=True)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="order_items",default=0)
-    quantity = models.IntegerField(default=0, blank=True)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, default=0)
+    quantity = models.IntegerField(default=1, blank=True)
     date_added = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -74,7 +76,7 @@ class OrderItem(models.Model):
 
     @property
     def get_total(self):
-        return self.Product.price * self.quantity if self.Product else 0
+        return self.Product.price * self.quantity
 
 class ShippingAddress(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, blank=True, null=True)

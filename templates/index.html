@@ -101,7 +101,7 @@
     
                         <!-- Navbar Login-->
                         <li class="ms-1 d-none d-lg-inline-block">
-                            <a class="nav-link text-body" href="./login.html">
+                            <a class="nav-link text-body" href="{% url "profile" %}">
                                 Account
                             </a>
                         </li>
@@ -175,8 +175,8 @@
                                             <p class="m-0 fs-5 fw-bold">$422.99</p>
                                         </div>
                                     </div>
-                                    <a href="./cart.html" class="btn btn-outline-dark w-100 text-center mt-4" role="button">View Cart</a>
-                                    <a href="./checkout.html" class="btn btn-dark w-100 text-center mt-2" role="button">Proceed To Checkout</a>
+                                    <a href="{% url "cart" %}" class="btn btn-outline-dark w-100 text-center mt-4" role="button">View Cart</a>
+                                    <a href="{% url "checkout" %}" class="btn btn-dark w-100 text-center mt-2" role="button">Proceed To Checkout</a>
                                 </div>
                                 <!-- / Cart Summary-->
                               </div>
@@ -266,7 +266,7 @@
                     <h2 class="display-3 tracking-wide fw-bold text-uppercase tracking-wide text-white" data-swiper-parallax="100">
                       <span class="text-outline-light">Summer</span> Essentials</h2>
                     <div data-swiper-parallax-y="-25">
-                      <a href="./category.html" class="btn btn-psuedo text-white" role="button">Shop New Arrivals</a>
+                      <a href="{% url "category" %}" class="btn btn-psuedo text-white" role="button">Shop New Arrivals</a>
                     </div>
                   </div>
                 </div>
@@ -285,7 +285,7 @@
                     <h2 class="display-3 tracking-wide fw-bold text-uppercase tracking-wide text-white" data-swiper-parallax="100">
                       Adidas <span class="text-outline-light">SS21</span></h2>
                     <div data-swiper-parallax-y="-25">
-                      <a href="./category.html" class="btn btn-psuedo text-white" role="button">Shop Latest Adidas</a>
+                      <a href="{% url "category" %}" class="btn btn-psuedo text-white" role="button">Shop Latest Adidas</a>
                     </div>
                   </div>
                 </div>
@@ -304,7 +304,7 @@
                     <h2 class="display-3 tracking-wide fw-bold text-uppercase tracking-wide text-white" data-swiper-parallax="100">
                       Nike <span class="text-outline-light">SS21</span></h2>
                     <div data-swiper-parallax-y="-25">
-                      <a href="./category.html" class="btn btn-psuedo text-white" role="button">Shop Latest Nike</a>
+                      <a href="{% url "category" %}" class="btn btn-psuedo text-white" role="button">Shop Latest Nike</a>
                     </div>
                   </div>
                 </div>
@@ -323,7 +323,7 @@
                     <h2 class="display-3 tracking-wide fw-bold text-uppercase tracking-wide text-white" data-swiper-parallax="100">
                       <span class="text-outline-light">Sustainable</span> Fashion</h2>
                     <div data-swiper-parallax-y="-25">
-                      <a href="./category.html" class="btn btn-psuedo text-white" role="button">Why We Are Different</a>
+                      <a href="{% url "category" %}" class="btn btn-psuedo text-white" role="button">Why We Are Different</a>
                     </div>
                   </div>
                 </div>
@@ -344,63 +344,63 @@
                     <div class="marquee-body">
                         <div class="marquee-section animation-marquee-50">
                             <div class="mx-3 mx-lg-5 f-w-24">
-                                <a class="d-block" href="./category.html">
+                                <a class="d-block" href="{% url "category" %}">
                                     <picture>
                                         <img class="img-fluid d-table mx-auto" src="{% static 'images/logos/logo-1.svg' %}" alt="">
                                     </picture>
                                 </a>
                             </div>
                             <div class="mx-3 mx-lg-5 f-w-24">
-                                <a class="d-block" href="./category.html">
+                                <a class="d-block" href="{% url "category" %}">
                                     <picture>
                                         <img class="img-fluid d-table mx-auto" src="{% static 'images/logos/logo-2.svg' %}" alt="">
                                     </picture>
                                 </a>
                             </div>
                             <div class="mx-3 mx-lg-5 f-w-24">
-                                <a class="d-block" href="./category.html">
+                                <a class="d-block" href="{% url "category" %}">
                                     <picture>
                                         <img class="img-fluid d-table mx-auto" src="{% static 'images/logos/logo-3.svg' %}" alt="">
                                     </picture>
                                 </a>
                             </div>
                             <div class="mx-3 mx-lg-5 f-w-24">
-                                <a class="d-block" href="./category.html">
+                                <a class="d-block" href="{% url "category" %}">
                                     <picture>
                                         <img class="img-fluid d-table mx-auto" src="{% static 'images/logos/logo-4.svg' %}" alt="">
                                     </picture>
                                 </a>
                             </div>
                             <div class="mx-3 mx-lg-5 f-w-24">
-                                <a class="d-block" href="./category.html">
+                                <a class="d-block" href="{% url "category" %}">
                                     <picture>
                                         <img class="img-fluid d-table mx-auto" src="{% static 'images/logos/logo-5.svg' %}" alt="">
                                     </picture>
                                 </a>
                             </div>
                             <div class="mx-3 mx-lg-5 f-w-24">
-                                <a class="d-block" href="./category.html">
+                                <a class="d-block" href="{% url "category" %}">
                                     <picture>
                                         <img class="img-fluid d-table mx-auto" src="{% static 'images/logos/logo-6.svg' %}" alt="">
                                     </picture>
                                 </a>
                             </div>
                             <div class="mx-3 mx-lg-5 f-w-24">
-                                <a class="d-block" href="./category.html">
+                                <a class="d-block" href="{% url "category" %}">
                                     <picture>
                                         <img class="img-fluid d-table mx-auto" src="{% static 'images/logos/logo-7.svg' %}" alt="">
                                     </picture>
                                 </a>
                             </div>
                             <div class="mx-3 mx-lg-5 f-w-24">
-                                <a class="d-block" href="./category.html">
+                                <a class="d-block" href="{% url "category" %}">
                                     <picture>
                                         <img class="img-fluid d-table mx-auto" src="{% static 'images/logos/logo-8.svg' %}" alt="">
                                     </picture>
                                 </a>
                             </div>
                             <div class="mx-3 mx-lg-5 f-w-24">
-                                <a class="d-block" href="./category.html">
+                                <a class="d-block" href="{% url "category" %}">
                                     <picture>
                                         <img class="img-fluid d-table mx-auto" src="{% static 'images/logos/logo-9.svg' %}" alt="">
                                     </picture>
@@ -409,63 +409,63 @@
                         </div>
                         <div class="marquee-section animation-marquee-50">
                             <div class="mx-5 f-w-24">
-                                <a class="d-block" href="./category.html">
+                                <a class="d-block" href="{% url "category" %}">
                                     <picture>
                                         <img class="img-fluid d-table mx-auto" src="{% static 'images/logos/logo-1.svg' %}" alt="">
                                     </picture>
                                 </a>
                             </div>
                             <div class="mx-5 f-w-24">
-                                <a class="d-block" href="./category.html">
+                                <a class="d-block" href="{% url "category" %}">
                                     <picture>
                                         <img class="img-fluid d-table mx-auto" src="{% static 'images/logos/logo-2.svg' %}" alt="">
                                     </picture>
                                 </a>
                             </div>
                             <div class="mx-5 f-w-24">
-                                <a class="d-block" href="./category.html">
+                                <a class="d-block" href="{% url "category" %}">
                                     <picture>
                                         <img class="img-fluid d-table mx-auto" src="{% static 'images/logos/logo-3.svg' %}" alt="">
                                     </picture>
                                 </a>
                             </div>
                             <div class="mx-5 f-w-24">
-                                <a class="d-block" href="./category.html">
+                                <a class="d-block" href="{% url "category" %}">
                                     <picture>
                                         <img class="img-fluid d-table mx-auto" src="{% static 'images/logos/logo-4.svg' %}" alt="">
                                     </picture>
                                 </a>
                             </div>
                             <div class="mx-5 f-w-24">
-                                <a class="d-block" href="./category.html">
+                                <a class="d-block" href="{% url "category" %}">
                                     <picture>
                                         <img class="img-fluid d-table mx-auto" src="{% static 'images/logos/logo-5.svg' %}" alt="">
                                     </picture>
                                 </a>
                             </div>
                             <div class="mx-5 f-w-24">
-                                <a class="d-block" href="./category.html">
+                                <a class="d-block" href="{% url "category" %}">
                                     <picture>
                                         <img class="img-fluid d-table mx-auto" src="{% static 'images/logos/logo-6.svg' %}" alt="">
                                     </picture>
                                 </a>
                             </div>
                             <div class="mx-5 f-w-24">
-                                <a class="d-block" href="./category.html">
+                                <a class="d-block" href="{% url "category" %}">
                                     <picture>
                                         <img class="img-fluid d-table mx-auto" src="{% static 'images/logos/logo-7.svg' %}" alt="">
                                     </picture>
                                 </a>
                             </div>
                             <div class="mx-5 f-w-24">
-                                <a class="d-block" href="./category.html">
+                                <a class="d-block" href="{% url "category" %}">
                                     <picture>
                                         <img class="img-fluid d-table mx-auto" src="{% static 'images/logos/logo-8.svg' %}" alt="">
                                     </picture>
                                 </a>
                             </div>
                             <div class="mx-5 f-w-24">
-                                <a class="d-block" href="./category.html">
+                                <a class="d-block" href="{% url "category" %}">
                                     <picture>
                                         <img class="img-fluid d-table mx-auto" src="{% static 'images/logos/logo-9.svg' %}" alt="">
                                     </picture>
@@ -521,7 +521,7 @@
                                 </picture>
                                 <p class="title-small mb-2 text-muted">Must Haves</p>
                                 <h4 class="lead fw-bold">Premium Essentials</h4>
-                                <a href="./category.html" class="btn btn-psuedo align-self-start">Shop Now</a>
+                                <a href="{% url "category" %}" class="btn btn-psuedo align-self-start">Shop Now</a>
                             </div>
                           </div>
                           <div class="swiper-slide align-self-stretch bg-transparent h-auto">
@@ -531,7 +531,7 @@
                                 </picture>
                                 <p class="title-small mb-2 text-muted">Curated Selection</p>
                                 <h4 class="lead fw-bold">Our Favourites</h4>
-                                <a href="./category.html" class="btn btn-psuedo align-self-start">Shop Now</a>
+                                <a href="{% url "category" %}" class="btn btn-psuedo align-self-start">Shop Now</a>
                             </div>
                           </div>
                           <div class="swiper-slide align-self-stretch bg-transparent h-auto">
@@ -541,7 +541,7 @@
                                 </picture>
                                 <p class="title-small mb-2 text-muted">Streetwear Basics</p>
                                 <h4 class="lead fw-bold">T-Shirts &amp; Shirts</h4>
-                                <a href="./category.html" class="btn btn-psuedo align-self-start">Shop Now</a>
+                                <a href="{% url "category" %}" class="btn btn-psuedo align-self-start">Shop Now</a>
                             </div>
                           </div>
                           <div class="swiper-slide align-self-stretch bg-transparent h-auto">
@@ -551,7 +551,7 @@
                                 </picture>
                                 <p class="title-small mb-2 text-muted">Waterproof &amp; Lightweight</p>
                                 <h4 class="lead fw-bold">Jackets &amp; Coats</h4>
-                                <a href="./category.html" class="btn btn-psuedo align-self-start">Shop Now</a>
+                                <a href="{% url "category" %}" class="btn btn-psuedo align-self-start">Shop Now</a>
                             </div>
                           </div>
                           <div class="swiper-slide align-self-stretch bg-transparent h-auto">
@@ -561,7 +561,7 @@
                                 </picture>
                                 <p class="title-small mb-2 text-muted">Keep Warm</p>
                                 <h4 class="lead fw-bold">Hats &amp; Beanies</h4>
-                                <a href="./category.html" class="btn btn-psuedo align-self-start">Shop Now</a>
+                                <a href="{% url "category" %}" class="btn btn-psuedo align-self-start">Shop Now</a>
                             </div>
                           </div>
                           <div class="swiper-slide align-self-stretch bg-transparent h-auto">
@@ -571,7 +571,7 @@
                                 </picture>
                                 <p class="title-small mb-2 text-muted">20% Off</p>
                                 <h4 class="lead fw-bold">Summer Sale</h4>
-                                <a href="./category.html" class="btn btn-psuedo align-self-start">Shop Now</a>
+                                <a href="{% url "category" %}" class="btn btn-psuedo align-self-start">Shop Now</a>
                             </div>
                           </div>
                           <div class="swiper-slide align-self-stretch bg-transparent h-auto">
@@ -581,7 +581,7 @@
                                 </picture>
                                 <p class="title-small mb-2 text-muted">Just Arrived</p>
                                 <h4 class="lead fw-bold">Latest Kicks</h4>
-                                <a href="./category.html" class="btn btn-psuedo align-self-start">Shop Now</a>
+                                <a href="{% url "category" %}" class="btn btn-psuedo align-self-start">Shop Now</a>
                             </div>
                           </div>
                           <div class="swiper-slide align-self-stretch bg-transparent h-auto">
@@ -591,7 +591,7 @@
                                 </picture>
                                 <p class="title-small mb-2 text-muted">Accessories</p>
                                 <h4 class="lead fw-bold">Bags &amp; Rugsacks</h4>
-                                <a href="./category.html" class="btn btn-psuedo align-self-start">Shop Now</a>
+                                <a href="{% url "category" %}" class="btn btn-psuedo align-self-start">Shop Now</a>
                             </div>
                           </div>
                       </div>
@@ -618,9 +618,9 @@
                 <div class="col-12 col-md-6 position-relative z-index-20 mb-7 mb-lg-0" data-aos="fade-right">
                     <p class="text-muted title-small">Welcome</p>
                     <h3 class="display-3 fw-bold mb-5"><span class="text-outline-dark">Wabi Clothing</span> - streetwear & footwear specialists</h3>
-                    <p class="lead">We are Wabi Clothing, a leading supplier of global streetwear brands, including names such as <a href="./category.html">Stussy</a>, <a href="./category.html">Carhartt</a>, <a href="./category.html">Gramicci</a>, <a href="./category.html">Afends</a> and many more.</p>
+                    <p class="lead">We are Wabi Clothing, a leading supplier of global streetwear brands, including names such as <a href="{% url "category" %}">Stussy</a>, <a href="{% url "category" %}">Carhartt</a>, <a href="{% url "category" %}">Gramicci</a>, <a href="{% url "category" %}">Afends</a> and many more.</p>
                     <p class="lead">With worldwide shipping and unbeatable prices - now's a great time to pick out something from our range.</p>
-                    <a href="./category.html" class="btn btn-psuedo" role="button">Shop New Arrivals</a>
+                    <a href="{% url "category" %}" class="btn btn-psuedo" role="button">Shop New Arrivals</a>
                 </div>
                 <div class="col-12 col-md-6 position-relative z-index-20 pe-0" data-aos="fade-left">
                     <picture class="w-50 d-block position-relative z-index-10 border border-white border-4 shadow-lg">
@@ -647,7 +647,7 @@
                             <div class="py-6 px-5 px-lg-10 text-center w-100">
                                 <h2 class="display-1 mb-3 fw-bold text-white"><span class="text-outline-light">Flash</span> Sale</h2>
                                 <p class="fs-5 fw-light text-white d-none d-md-block">Our yearly flash sale is now on! Grab yourself a bargain from the world's leading streetwear brands.</p>
-                                <a href="./category.html" class="btn btn-psuedo text-white" role="button">Shop All Sale Items</a>
+                                <a href="{% url "category" %}" class="btn btn-psuedo text-white" role="button">Shop All Sale Items</a>
                             </div>
                         </div>
                     </div>
@@ -660,7 +660,7 @@
                                     </picture>
                                     <div class="card-overlay">
                                         <p class="lead fw-bolder mb-2">The Jordan Delta 2</p>
-                                        <a href="./category.html" class="btn btn-psuedo text-white py-2" role="button">Shop Kicks</a>
+                                        <a href="{% url "category" %}" class="btn btn-psuedo text-white py-2" role="button">Shop Kicks</a>
                                     </div>
                                 </div>
                             </div>
@@ -671,7 +671,7 @@
                                     </picture>
                                     <div class="card-overlay">
                                         <p class="lead fw-bolder mb-2">Latest Mens Shirts</p>
-                                        <a href="./category.html" class="btn btn-psuedo text-white py-2" role="button">Shop New</a>
+                                        <a href="{% url "category" %}" class="btn btn-psuedo text-white py-2" role="button">Shop New</a>
                                     </div>
                                 </div>
                             </div>
@@ -682,7 +682,7 @@
                                     </picture>
                                     <div class="card-overlay">
                                         <p class="lead fw-bolder mb-2">KiiKii Osake Tees</p>
-                                        <a href="./category.html" class="btn btn-psuedo text-white py-2" role="button">Shop T-Shirts</a>
+                                        <a href="{% url "category" %}" class="btn btn-psuedo text-white py-2" role="button">Shop T-Shirts</a>
                                     </div>
                                 </div>
                             </div>
@@ -693,7 +693,7 @@
                                     </picture>
                                     <div class="card-overlay">
                                         <p class="lead fw-bolder mb-2">Multibuy Womens Shirts</p>
-                                        <a href="./category.html" class="btn btn-psuedo text-white py-2" role="button">Shop Sale Items</a>
+                                        <a href="{% url "category" %}" class="btn btn-psuedo text-white py-2" role="button">Shop Sale Items</a>
                                     </div>
                                 </div>
                             </div>
@@ -859,6 +859,8 @@
     
     <!-- Theme JS -->
     <script src="{% static 'js/theme.bundle.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 
 </html>

@@ -68,10 +68,8 @@
                             <ul class="list-unstyled d-flex justify-content-start mt-4 align-items-center fw-bolder small">
                                 <li class="me-4"><a class="nav-link-checkout "
                                         href="{% url "cart" %}">Your Cart</a></li>
-                                <li class="me-4"><a class="nav-link-checkout active"
-                                        href="{% url "checkout" %}">Information</a></li>
                                 <li><a class="nav-link-checkout nav-link-last "
-                                        href="{% url "checkout" %}">Payment</a></li>
+                                        href="{% url "checkout" %}">Checkout</a></li>
                                 
                             </ul>
                         </nav>                        <div class="mt-5">
@@ -233,57 +231,88 @@
                               </div>
                             </div>
                             <!-- / Billing Address-->
+
+                             <!-- Checkout Panel Information-->
+                            <h3 class="fs-5 fw-bolder mb-4 border-bottom pb-4">Shipping Method</h3>
                             
-                            <div class="pt-5 mt-5 pb-5 border-top d-flex justify-content-md-end align-items-center">
-                              <button id="proceed-to-checkout" class="btn btn-dark w-100 w-md-auto">Proceed to Payment</button>
-                            </div>                        </div>
+                            <!-- Shipping Option-->
+                            <div class="form-check form-group form-check-custom form-radio-custom form-radio-highlight mb-3">
+                              <input class="form-check-input" type="radio" name="checkoutShippingMethod" id="checkoutShippingMethodOne" checked>
+                              <label class="form-check-label" for="checkoutShippingMethodOne">
+                                <span class="d-flex justify-content-between align-items-start">
+                                  <span>
+                                    <span class="mb-0 fw-bolder d-block">Cash On Delivery</span>
+                                    <small class="fw-bolder">Include shipping fees</small>
+                                  </span>
+                                  <span class="small fw-bolder text-uppercase"></span>
+                                </span>
+                              </label>
+                            </div>
+                            
+                            <!-- Shipping Option--> 
+                            
+                            
+                            <div class="pt-5 mt-5 pb-5 border-top d-flex flex-column flex-md-row justify-content-between align-items-center">
+                              <a href="{% url "cart" %}" class="btn ps-md-0 btn-link fw-bolder w-100 w-md-auto mb-2 mb-md-0" role="button">Back to Cart</a>
+                              <button id="proceed-to-payment" class="btn btn-dark w-100 w-md-auto">Place Order</button>
+                            </div>
+                            </div>
                     </div>
                 </div>
                 <div class="col-12 col-lg-5 bg-light aside-checkout pb-5 pb-lg-0">
                     <div class="p-4 py-lg-0 pe-lg-0 ps-lg-5">
-                        <div class="pb-3">
+                        <div class="pb-3 my-5">
                             <!-- Cart Item-->
-                             {% for item in  items%}
-                            <div class="row mx-0 py-4 g-0 border-bottom">
-                                <div class="col-2 position-relative">
-                                        <span class="checkout-item-qty">3</span>
-                                    <picture class="d-block border">
-                                        <img class="img-fluid" src="{{item.product.imageURL}}" alt="HTML Bootstrap Template by Pixel Rocket">
-                                    </picture>
-                                </div>
-                                <div class="col-9 offset-1">
-                                    <div>
-                                        <h6 class="justify-content-between d-flex align-items-start mb-2">
-                                            {{item.product.name}}
-                                            <i class="ri-close-line ms-3"></i>
-                                        </h6>
-                                        <span class="d-block text-muted fw-bolder text-uppercase fs-9">Size: 9 / Qty: {{item.product.quantity}}</span>
-                                    </div>
-                                    <p class="fw-bolder text-end text-muted m-0">${{item.product.price}}</p>
-                                </div>
-                            </div>  
-                            {% endfor %}  <!-- / Cart Item-->
+                             {% if items %}
+  <ul class="list-group" id="cart-items">
+    {% for item in items %}
+      {% if item.Product %}
+        <li class="list-group-item d-flex align-items-center justify-content-between" data-item-id="{{ item.id }}">
+          <div class="d-flex align-items-center">
+            <img src="{{ item.Product.imageURL }}" alt="{{ item.Product.name }}" width="60" class="me-3 rounded">
+            <div>
+              <h6 class="mb-0">{{ item.Product.name }}</h6>
+               <small class="text-muted">Price: ₹<span class="item-price">{{ item.Product.price }}</span></small>
+              <div class="mt-1">
+                Qty: <input type="number"
+            min="1"
+            value="{{ item.quantity }}"
+            class="form-control form-control-sm d-inline-block quantity-input"
+            style="width: 70px;"
+            data-item-id="{{ item.id }}"
+            data-unit-price="{{ item.Product.price }}">
+              </div>
+            </div>
+          </div>
+        </li>
+      {% endif %}
+    {% endfor %}
+  </ul>
+{% else %}
+  <p>Your cart is empty.</p>
+{% endif %}  <!-- / Cart Item-->
                             <!-- Cart Item-->
                         </div>
                         <div class="py-4 border-bottom">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <p class="m-0 fw-bolder fs-6">Subtotal</p>
-                                <p class="m-0 fs-6 fw-bolder"></p>
-                            </div>
-                            <div class="d-flex justify-content-between align-items-center ">
-                                <p class="m-0 fw-bolder fs-6">Shipping</p>
-                                <p class="m-0 fs-6 fw-bolder">50</p>
-                            </div>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                          <p class="m-0 fw-bolder fs-6">Subtotal</p>
+                          <p class="m-0 fs-6 fw-bolder" id="subtotal">₹0.00</p>
                         </div>
-                        <div class="py-4 border-bottom">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <p class="m-0 fw-bold fs-5">Grand Total</p>
-                                    <span class="text-muted small"></span>
-                                </div>
-                                <p class="m-0 fs-5 fw-bold">${{order.get_cart_total | floatformat:2}}</p>
-                            </div>
+                        <div class="d-flex justify-content-between align-items-center">
+                          <p class="m-0 fw-bolder fs-6">Shipping</p>
+                          <p class="m-0 fs-6 fw-bolder" id="shipping">₹50.00</p> <!-- Add this id -->
                         </div>
+                      </div>
+                      <div class="py-4 border-bottom">
+                        <div class="d-flex justify-content-between">
+                          <div>
+                            <p class="m-0 fw-bold fs-5">Grand Total</p>
+                            <span class="text-muted small"></span>
+                          </div>
+                            <p class="m-0 fs-5 fw-bold" id="grand-total">₹{{ order.get_cart_total|floatformat:2 }}</p>
+                        </div>
+                      </div>
+
                         <div class="py-4">
                             <div class="input-group mb-0">
                                 <input type="text" class="form-control" placeholder="Enter your coupon code">
@@ -305,11 +334,36 @@
     
     <!-- Theme JS -->
     <script src="{% static 'js/theme.bundle.js' %}"></script>
-    
+    <script>
+document.addEventListener('DOMContentLoaded', function () {
+  const quantityInputs = document.querySelectorAll('.quantity-input');
+  const subtotalEl = document.getElementById('subtotal');
+  const grandTotalEl = document.getElementById('grand-total');
+  const shippingCost = 50;
+
+  function updateTotals() {
+    let subtotal = 0;
+
+    quantityInputs.forEach(input => {
+      const price = parseFloat(input.dataset.unitPrice);
+      const quantity = parseInt(input.value) || 1;
+      subtotal += price * quantity;
+    });
+
+    subtotalEl.textContent = `₹${subtotal.toFixed(2)}`;
+    grandTotalEl.textContent = `₹${(subtotal + shippingCost).toFixed(2)}`;
+  }
+
+  // Run once on page load
+  updateTotals();
+
+  // Run every time quantity is changed
+  quantityInputs.forEach(input => {
+    input.addEventListener('input', updateTotals);
+  });
+});
+</script>
+
+
 </body>
-
-<script src="{% static 'js/process_order.js' %}"></script>
-<script src="{% static 'js/checkout.js' %}"></script>
-
-
 </html>

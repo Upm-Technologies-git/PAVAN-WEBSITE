@@ -1,0 +1,69 @@
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Customer Profile</title>
+
+  <link rel="stylesheet" href="{% static 'css/libs.bundle.css' %}">
+  <link rel="stylesheet" href="{% static 'css/theme.bundle.css' %}">
+</head>
+<body class="bg-light">
+
+<section class="vh-100 d-flex justify-content-center align-items-center p-4">
+  <div class="col-12 col-md-8 col-lg-6 col-xl-5 bg-white p-5 shadow rounded">
+
+    <!-- Logo -->
+    <div class="text-center mb-4">
+      <a href="{% url 'index' %}">
+        <img src="{% static 'images/logos/wabi-logo.png' %}" alt="Logo" height="40">
+      </a>
+    </div>
+
+    <h2 class="fw-bold text-center mb-4">Your Profile</h2>
+
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+
+    <form method="POST">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label class="form-label">First Name</label>
+        <input type="text" class="form-control" name="first_name" value="{{ request.user.first_name }}">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Last Name</label>
+        <input type="text" class="form-control" name="last_name" value="{{ request.user.last_name }}">
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-control bg-light" value="{{ request.user.email }}" disabled>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Phone Number</label>
+        <input type="text" class="form-control" name="phone" value="{{ request.user.customer.phone|default:'' }}">
+      </div>
+
+      <button type="submit" class="btn btn-dark w-100">Save Changes</button>
+    </form>
+
+    <div class="text-center mt-3">
+      <a href="{% url 'forgotpass' %}" class="text-muted small">Forgot / Change Password?</a><br>
+      <a href="{% url 'index' %}" class="text-muted">← Back to Home</a>
+    </div>
+
+  </div>
+</section>
+
+<script src="{% static 'js/vendor.bundle.js' %}"></script>
+<script src="{% static 'js/theme.bundle.js' %}"></script>
+</body>
+</html>
