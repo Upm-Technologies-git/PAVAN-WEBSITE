@@ -1,0 +1,24 @@
+{% load static %}
+
+{% block content %}
+<section class="mt-0 overflow-hidden vh-100 d-flex justify-content-center align-items-center p-4 bg-light">
+  <div class="col col-md-8 col-lg-6 col-xxl-5">
+    
+    <!-- Logo -->
+    <a class="navbar-brand fw-bold fs-3 d-flex justify-content-center align-items-center w-100 mb-4" href="{% url 'index' %}">
+      <img src="{% static 'images/logos/wabi-logo.png' %}" alt="Logo" height="40">
+    </a>
+
+    <!-- Success Card -->
+    <div class="shadow-xl p-4 p-lg-5 bg-white text-center">
+      <h1 class="text-success fw-bold mb-3">Thank You!</h1>
+      <p class="lead mb-2">Your order has been successfully placed.</p>
+      {% if order %}
+        <p class="mb-4">Order Number: <strong>{{ order.order_number }}</strong></p>
+      {% endif %}
+      <a href="{% url 'cart' %}" class="btn btn-dark d-block w-100">Continue Shopping</a>
+    </div>
+
+  </div>
+</section>
+{% endblock %}
