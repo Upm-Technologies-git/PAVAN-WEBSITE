@@ -188,18 +188,20 @@
 <div class="col-12 col-md-6 col-xl-7">
   <div id="productImageCarousel" class="carousel slide" data-bs-ride="carousel" data-aos="fade-right">
     <div class="carousel-inner">
-      <div class="carousel-item active">
-        <img src="{{ product.image.url }}" class="d-block w-100 img-fluid" alt="{{ product.name }}">
-      </div>
-      <div class="carousel-item">
-        <img class="d-block w-100 img-fluid" data-zoomable src="{% static 'images/products/product-page-2.jpeg' %}" alt="Product Image 2">
-      </div>
-      <div class="carousel-item">
-        <img class="d-block w-100 img-fluid" data-zoomable src="{% static 'images/products/product-page-3.jpeg' %}" alt="Product Image 3">
-      </div>
-      <div class="carousel-item">
-        <img class="d-block w-100 img-fluid" data-zoomable src="{% static 'images/products/product-page-4.jpeg' %}" alt="Product Image 4">
-      </div>
+      <div class="carousel-inner">
+  {% if product.image %}
+    <div class="carousel-item active">
+      <img src="{{ product.image.url }}" class="d-block w-100 img-fluid" alt="{{ product.name }}">
+    </div>
+  {% endif %}
+
+  {% for img in product.images.all %}
+    <div class="carousel-item {% if not product.image and forloop.first %}active{% endif %}">
+      <img src="{{ img.image.url }}" class="d-block w-100 img-fluid" alt="{{ product.name }} - Extra Image">
+    </div>
+  {% endfor %}
+</div>
+
     </div>
 
     <!-- Carousel Controls -->

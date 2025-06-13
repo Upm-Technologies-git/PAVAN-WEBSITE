@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils.html import format_html
 from .models import (
     Customer, Product, Order, OrderItem, ShippingAddress,
-    Newsletter, ContactUs, Category
+    Newsletter, ContactUs, Category,Banner,FeaturedCategory,InstagramImage,ProductImage
 )
 
 # Inline for order items inside the order detail page
@@ -51,17 +51,28 @@ class CustomerAdmin(admin.ModelAdmin):
     list_display = ['user', 'name', 'email', 'phone']
     search_fields = ['name', 'email', 'phone', 'user__username']
 
+class ProductImageInline(admin.TabularInline):
+    model = ProductImage
+    extra = 3  # You can set to 5 or more
+    readonly_fields = ['preview']
+
+    def preview(self, obj):
+        if obj.image:
+            return format_html('<img src="{}" width="60" style="object-fit: cover;" />', obj.image.url)
+        return "-"
+    preview.short_description = "Preview"
+
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ['name', 'price', 'digital', 'image_tag']
     search_fields = ['name']
     readonly_fields = ['image_tag']
-
+    inlines = [ProductImageInline]
     def image_tag(self, obj):
         if obj.image:
             return format_html('<img src="{}" width="50" />', obj.image.url)
         return "-"
-    image_tag.short_description = 'Image'
+    image_tag.short_description = 'Main Image'
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
@@ -85,3 +96,20 @@ class ContactUsAdmin(admin.ModelAdmin):
     list_display = ['firstname', 'lastname', 'email', 'message']
     search_fields = ['firstname', 'lastname', 'email']
 
+@admin.register(Banner)
+class BannerAdmin(admin.ModelAdmin):
+    list_display = ['title', 'order', 'active']
+    list_editable = ['order', 'active']
+    search_fields = ['title', 'subtitle']
+
+
+@admin.register(FeaturedCategory)
+class FeaturedCategoryAdmin(admin.ModelAdmin):
+    list_display = ['title', 'subtitle', 'order', 'active']
+    list_filter = ['active']
+    ordering = ['order']
+
+@admin.register(InstagramImage)
+class InstagramImageAdmin(admin.ModelAdmin):
+    list_display = ['alt_text', 'active', 'order']
+    list_editable = ['active', 'order']

@@ -22,7 +22,9 @@ class Product(models.Model):
     name = models.CharField(max_length=200, null=True)
     price = models.FloatField()
     digital = models.BooleanField(default=False, null=True, blank=False)
-    image = models.ImageField(null=True, blank=True, upload_to=getFileName)
+    image = models.ImageField(null=True, blank=True, upload_to=getFileName)  # Primary display image
+    is_featured = models.BooleanField(default=False)  # Add this line
+    description = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return f'Product {self.name}'
@@ -30,6 +32,13 @@ class Product(models.Model):
     @property
     def imageURL(self):
         return self.image.url if self.image else ''
+    
+class ProductImage(models.Model):
+    product = models.ForeignKey(Product, related_name='images', on_delete=models.CASCADE)
+    image = models.ImageField(upload_to=getFileName)
+
+    def __str__(self):
+        return f"Image for {self.product.name}"
 
 
 class Order(models.Model):
@@ -119,3 +128,38 @@ class Category(models.Model):
     def imageURL(self):
         return self.image.url if self.image else ''
     
+class Banner(models.Model):
+    title = models.CharField(max_length=200)
+    subtitle = models.CharField(max_length=200)
+    button_text = models.CharField(max_length=50)
+    image = models.ImageField(upload_to='banners/')
+    order = models.PositiveIntegerField(default=0)
+    active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.title
+    
+class FeaturedCategory(models.Model):
+    title = models.CharField(max_length=100)
+    subtitle = models.CharField(max_length=100, blank=True)
+    image = models.ImageField(upload_to='categories/')
+    button_text = models.CharField(max_length=50, default='Shop Now')
+
+    order = models.PositiveIntegerField(default=0)
+    active = models.BooleanField(default=True)
+
+    def get_link(self):
+        return self.link_url or reverse('category')
+
+    def __str__(self):
+        return self.title    
+        
+
+class InstagramImage(models.Model):
+    image = models.ImageField(upload_to='instagram/')
+    alt_text = models.CharField(max_length=255, blank=True)
+    active = models.BooleanField(default=True)
+    order = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return self.alt_text or f"Instagram Image {self.id}"

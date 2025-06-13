@@ -14,13 +14,22 @@ from django.views.decorators.csrf import csrf_exempt
 
 from .models import (
     Product, ContactUs, Customer, Order, OrderItem,
-    ShippingAddress, Newsletter, Category
+    ShippingAddress, Newsletter, Category,Banner,FeaturedCategory,InstagramImage
 )
 
 # Homepage
 
 def index(request):
-    return render(request, "index.html")
+    banners = Banner.objects.filter(active=True).order_by('order')
+    featured_categories = FeaturedCategory.objects.filter(active=True).order_by('order')
+    featured_products = Product.objects.filter(is_featured=True)[:4] 
+    instagram_images = InstagramImage.objects.filter(active=True).order_by('order')
+    return render(request, "index.html", {
+        'banners': banners,
+        'featured_categories': featured_categories,
+        'featured_products': featured_products,
+        'instagram_images': instagram_images,
+    })
 
 # Login View
 def login(request):

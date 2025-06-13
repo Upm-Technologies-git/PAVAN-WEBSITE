@@ -1,24 +1,62 @@
 {% load static %}
 
 {% block content %}
-<section class="mt-0 overflow-hidden vh-100 d-flex justify-content-center align-items-center p-4 bg-light">
-  <div class="col col-md-8 col-lg-6 col-xxl-5">
-    
-    <!-- Logo -->
-    <a class="navbar-brand fw-bold fs-3 d-flex justify-content-center align-items-center w-100 mb-4" href="{% url 'index' %}">
-      <img src="{% static 'images/logos/wabi-logo.png' %}" alt="Logo" height="40">
-    </a>
 
-    <!-- Success Card -->
-    <div class="shadow-xl p-4 p-lg-5 bg-white text-center">
-      <h1 class="text-success fw-bold mb-3">Thank You!</h1>
-      <p class="lead mb-2">Your order has been successfully placed.</p>
-      {% if order %}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Success | Wabi </title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+
+  <!-- Favicon -->
+  <link rel="icon" href="{% static 'images/favicon/favicon-32x32.png' %}" type="image/png">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="{% static 'css/libs.bundle.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/theme.bundle.css' %}" />
+</head>
+
+<body>
+  <section class="py-5">
+    <div class="container text-center">
+      <a class="navbar-brand fw-bold fs-3 mb-4 d-inline-block" href="{% url 'index' %}">
+        <img src="{% static 'images/logos/wabi-logo.png' %}" alt="Logo" height="40">
+      </a>
+
+      <div class="alert alert-success p-4 rounded shadow-sm">
+        <h2 class="fw-bold mb-3">Thank You for Your Order!</h2>
+        <p class="lead">Your order has been placed successfully.</p>
+        {% if order %}
         <p class="mb-4">Order Number: <strong>{{ order.order_number }}</strong></p>
-      {% endif %}
-      <a href="{% url 'cart' %}" class="btn btn-dark d-block w-100">Continue Shopping</a>
-    </div>
+        {% endif %}
+        <p class="text-muted">A confirmation email has been sent to your registered email address.</p>
+        <a href="{% url 'category' %}" class="btn btn-dark mt-3">Continue Shopping</a>
+      </div>
 
-  </div>
-</section>
+      <div class="mt-5">
+        <h5 class="fw-bold mb-3">What's Next?</h5>
+        <ul class="list-unstyled small text-muted">
+          <li><i class="bi bi-check-circle-fill me-2 text-success"></i>Your order is being processed</li>
+          <li><i class="bi bi-truck me-2 text-info"></i>You will receive tracking info once your order ships</li>
+          <li><i class="bi bi-envelope-fill me-2 text-primary"></i>We'll keep you updated via email</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Scripts -->
+  <script src="{% static 'js/vendor.bundle.js' %}"></script>
+  <script src="{% static 'js/theme.bundle.js' %}"></script>
+</body>
+</html>
+
+
 {% endblock %}
+
+
