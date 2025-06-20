@@ -86,7 +86,9 @@ def product(request, pk):
     categories = Category.objects.prefetch_related('products').all()
 
     # ✅ Get related products: same category, exclude current
-    related_products = Product.objects.exclude(id=product.id)
+    related_products = Product.objects.filter(
+        category=product.category
+    ).exclude(id=product.id)[:10]
 
     return render(request, 'product.html', {
         'product': product,
