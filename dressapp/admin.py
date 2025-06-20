@@ -8,9 +8,21 @@ from .models import (
 # Inline for order items inside the order detail page
 class OrderItemInline(admin.TabularInline):
     model = OrderItem
+    fields = ['product', 'quantity', 'size', 'get_total', 'product_image']
+    readonly_fields = ['product', 'quantity', 'size', 'get_total', 'product_image']
     extra = 0
-    readonly_fields = ['Product', 'quantity', 'get_total']
-    can_delete = False
+
+    def get_total(self, obj):
+        return obj.get_total()
+    get_total.short_description = "Total"
+
+    def product_image(self, obj):
+        if obj.product and obj.product.image:
+            return format_html(
+                '<img src="{}" width="50" height="50" style="object-fit:contain;"/>', obj.product.image.url
+            )
+        return "No Image"
+    product_image.short_description = "Image"
 
 # Inline for shipping address inside the order detail page
 class ShippingInline(admin.StackedInline):
@@ -28,7 +40,7 @@ class OrderAdmin(admin.ModelAdmin):
     inlines = [OrderItemInline, ShippingInline]
 
     def get_cart_total(self, obj):
-        return f"₹{obj.get_cart_total:.2f}"
+        return f"₹{float(obj.get_cart_total):.2f}"
     get_cart_total.short_description = 'Total Amount'
 
     def get_cart_items(self, obj):
@@ -37,13 +49,13 @@ class OrderAdmin(admin.ModelAdmin):
 
 @admin.register(OrderItem)
 class OrderItemAdmin(admin.ModelAdmin):
-    list_display = ['Product', 'order', 'quantity', 'get_total']
-    search_fields = ['Product__name', 'order__order_number']
-    readonly_fields = ['get_total']
+    list_display = ['product', 'order', 'quantity', 'get_total']
+    search_fields = ['product__name', 'order__order_number']
+    readonly_fields = ['product', 'quantity', 'get_total']
 
 @admin.register(ShippingAddress)
 class ShippingAddressAdmin(admin.ModelAdmin):
-    list_display = ['customer', 'order', 'address', 'city', 'state', 'zipcode', 'date_added']
+    list_display = ['customer', 'order', 'address', 'city', 'state', 'zipcode', 'phone', 'date_added']
     search_fields = ['customer__name', 'order__order_number', 'city', 'state']
 
 @admin.register(Customer)

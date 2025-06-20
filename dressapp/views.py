@@ -8,13 +8,14 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth import authenticate, login as auth_login, logout
 from django.utils.timezone import now
-from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
+from django.core.mail import send_mail
+from django.conf import settings
 
 from .models import (
     Product, ContactUs, Customer, Order, OrderItem,
-    ShippingAddress, Newsletter, Category,Banner,FeaturedCategory,InstagramImage
+    ShippingAddress, Newsletter, Category, Banner, FeaturedCategory, InstagramImage
 )
 
 # Homepage
@@ -22,7 +23,7 @@ from .models import (
 def index(request):
     banners = Banner.objects.filter(active=True).order_by('order')
     featured_categories = FeaturedCategory.objects.filter(active=True).order_by('order')
-    featured_products = Product.objects.filter(is_featured=True)[:4] 
+    featured_products = Product.objects.filter(is_featured=True)[:4]
     instagram_images = InstagramImage.objects.filter(active=True).order_by('order')
     return render(request, "index.html", {
         'banners': banners,
@@ -51,7 +52,6 @@ def login(request):
 
     return render(request, "login.html")
 
-
 # Register View
 def register(request):
     if request.method == 'POST':
@@ -72,18 +72,28 @@ def register(request):
             user.first_name = firstname
             user.last_name = lastname
             user.save()
-            Customer.objects.create(user=user)  # create linked customer
+            Customer.objects.create(user=user)
             messages.success(request, "Your account has been created successfully.")
             return redirect("login")
 
     return render(request, "register.html")
 
+# Product Detail
 
-# Product listing page
 def product(request, pk):
     product = get_object_or_404(Product, pk=pk)
-    return render(request, "product.html", {"Product": product})
+    sizes = ['S', 'SM', 'M', 'L', 'XL', 'XXL']
+    categories = Category.objects.prefetch_related('products').all()
 
+    # ✅ Get related products: same category, exclude current
+    related_products = Product.objects.exclude(id=product.id)
+
+    return render(request, 'product.html', {
+        'product': product,
+        'sizes': sizes,
+        'categories': categories,
+        'related_products': related_products,  
+    })
 # Forgot Password View
 def forgot(request):
     return render(request, "forgotten-password.html")
@@ -100,7 +110,6 @@ def checkout(request):
         except Customer.DoesNotExist:
             messages.error(request, "No customer profile found.")
 
-        
     return render(request, "checkout.html", {"items": items, "order": order})
 
 # Shipping and Payment Pages
@@ -109,45 +118,6 @@ def checkout_shipping(request):
 
 def checkout_payment(request):
     return render(request, 'checkout-payment.html')
-
-def process_order(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        customer = request.user.customer
-
-        order = Order.objects.create(
-            customer=customer,
-            user=request.user,
-            complete=True,
-            payment_method="COD",
-        )
-
-        ShippingAddress.objects.create(
-            customer=customer,
-            order=order,
-            address=data['address'],
-            city=data.get('city', ''),
-            state=data.get('state', ''),
-            zipcode=data.get('zip', '')
-        )
-
-        # Optional: Create dummy OrderItems for now
-        for item in data.get('items', []):
-            OrderItem.objects.create(
-                order=order,
-                Product_id=item['product_id'],  # Make sure product_id is passed
-                quantity=item['quantity']
-            )
-
-        return JsonResponse({'success': True, 'order_number': order.order_number})
-
-    return JsonResponse({'error': 'Invalid request'}, status=400)
-
-
-# Category Products
-def category(request):
-    products = Product.objects.all()
-    return render(request, "category.html", {"products": products})
 
 # Cart View
 def cart(request):
@@ -163,86 +133,123 @@ def cart(request):
 
     return render(request, "cart.html", {"items": items, "order": order})
 
-# AJAX Cart Update
+# Add to Cart
+@login_required(login_url='login')
 def add_to_cart(request, product_id):
-    customer = request.user.customer
     product = get_object_or_404(Product, id=product_id)
-    order, created = Order.objects.get_or_create(customer=customer, complete=False)
-    order_item, created = OrderItem.objects.get_or_create(order=order, Product=product)
+    size = request.POST.get("size") or request.GET.get("size", "")
 
-    if not created:
-        order_item.quantity += 1
-    order_item.save()
+    try:
+        customer = request.user.customer
+        order, _ = Order.objects.get_or_create(customer=customer, complete=False)
 
-    messages.success(request, f"{product.name} added to cart!")
+        if not size:
+            messages.error(request, "Please select a size.")
+            return redirect("product", product.id)
+
+        # ✅ size included in lookup
+        order_item, created = OrderItem.objects.get_or_create(order=order, product=product, size=size)
+
+        if not created:
+            order_item.quantity += 1
+
+        order_item.save()
+        messages.success(request, f"{product.name} ({size}) added to cart!")
+    except Customer.DoesNotExist:
+        messages.error(request, "Customer profile not found.")
+
     return redirect("cart")
 
-# Payment and Order Processing
-def processOrder(request):
-    transaction_id = datetime.datetime.now().timestamp()
-    data = json.loads(request.body)
 
-    if request.user.is_authenticated:
-        customer = request.user.customer
-        order, created = Order.objects.get_or_create(customer=customer, complete=False)
-    else:
+# Process Order
+@csrf_exempt
+@require_POST
+def process_order(request):
+    if not request.user.is_authenticated:
         return JsonResponse({'error': 'User not authenticated'}, status=403)
 
-    total = float(data['form']['total'])
-    order.transaction_id = transaction_id
+    data = json.loads(request.body)
+    customer = request.user.customer
+    order, created = Order.objects.get_or_create(customer=customer, complete=False)
 
-    if total == float(order.get_cart_total()):
-        order.complete = True
+    order.user = request.user
+    order.complete = True
+    order.payment_method = "COD"
+    order.transaction_id = str(datetime.datetime.now().timestamp())
     order.save()
 
-    if order.shipping:
-        ShippingAddress.objects.create(
-            customer=customer,
+    ShippingAddress.objects.create(
+        customer=customer,
+        order=order,
+        address=data['address'],
+        city=data.get('city', ''),
+        state=data.get('state', ''),
+        zipcode=data.get('zip', ''),
+        phone=data.get('phone')
+    )
+
+    for item in data.get('items', []):
+        product_id = item.get('product_id')
+        quantity = item.get('quantity', 1)
+        OrderItem.objects.get_or_create(
             order=order,
-            address=data['shipping']['address'],
-            city=data['shipping']['city'],
-            state=data['shipping']['state'],
-            zipcode=data['shipping']['zipcode'],
+            product_id=product_id,
+            defaults={'quantity': quantity}
         )
 
-    return JsonResponse('Payment submitted..', safe=False)
+    return JsonResponse({'success': True, 'order_number': order.order_number})
 
-# Payment Page
-from django.utils.crypto import get_random_string
-
+# Payment Processing
 def process_payment(request):
     if request.method == "POST":
         payment_method = request.POST.get("payment_method")
 
         if payment_method == "checkoutPaymentCOD":
-            order = Order.objects.create(
-                customer=request.user.customer,
-                order_number=get_random_string(10).upper(),
-                payment_method="Cash on Delivery",
-                status="Pending",
-            )
-            messages.success(request, "Your order has been placed successfully! Pay on delivery.")
-            return redirect("order_success")
+            try:
+                customer = request.user.customer
+                order, created = Order.objects.get_or_create(customer=customer, complete=False)
+
+                order.payment_method = "Cash on Delivery"
+                order.status = "Pending"
+                order.complete = True
+                order.save()
+
+                subject = f"New COD Order from {customer.name}"
+                message = f"""
+                A new order has been placed:
+
+                Order Number: {order.order_number}
+                Customer: {customer.name}
+                Email: {request.user.email}
+                Payment Method: {order.payment_method}
+                Status: {order.status}
+                Total Amount: ₹{order.get_cart_total:.2f}
+                Date: {order.date_ordered.strftime('%Y-%m-%d %H:%M')}
+                """
+
+                send_mail(
+                    subject,
+                    message,
+                    settings.EMAIL_HOST_USER,
+                    ['wabiwabiclothing@gmail.com'],
+                    fail_silently=False,
+                )
+
+                return render(request, "order-summary.html", {"order": order})
+            except Customer.DoesNotExist:
+                messages.error(request, "No customer profile found.")
+                return redirect("checkout_payment")
 
         messages.error(request, "Invalid payment method.")
-        return redirect("checkout_payment")
 
     return redirect("checkout_payment")
 
 # Success Page
-
 def order_success(request, order_number):
     order = get_object_or_404(Order, order_number=order_number)
     return render(request, 'success.html', {'order': order})
-# Utility: Generate Order Numbers
-def update_order_numbers_view(request):
-    orders = Order.objects.all()
-    for order in orders:
-        order.order_number = f"ORD-{now().strftime('%Y%m%d')}-{uuid.uuid4().hex[:6].upper()}"
-        order.save()
 
-    return HttpResponse('Order numbers updated successfully!')
-
+# Profile Update
 @login_required
 def profile(request):
     if request.method == 'POST':
@@ -255,7 +262,6 @@ def profile(request):
         user.last_name = last_name
         user.save()
 
-        # Ensure customer profile exists
         customer, created = Customer.objects.get_or_create(user=user)
         customer.phone = phone
         customer.save()
@@ -264,13 +270,7 @@ def profile(request):
 
     return render(request, 'profile.html')
 
-def product(request, pk):
-    product = get_object_or_404(Product, pk=pk)
-    return render(request, "product.html", {"product": product})
-
-
-
-
+# Quantity Update via AJAX
 @csrf_exempt
 @require_POST
 def update_quantity_ajax(request):
@@ -283,13 +283,13 @@ def update_quantity_ajax(request):
         item.quantity = quantity
         item.save()
 
-        item_total = round(item.get_total, 2)
-        order = item.order
-        cart_total = round(order.get_cart_total, 2)
-        return JsonResponse({'success': True, 'item_total': item_total, 'cart_total': cart_total})
+        return JsonResponse({
+            'success': True,
+            'item_total': round(item.get_total(), 2),
+            'cart_total': round(item.order.get_cart_total, 2)
+        })
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)}, status=400)
-
 
 @csrf_exempt
 @login_required
@@ -297,40 +297,22 @@ def update_cart_item(request, item_id):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
-            new_quantity = int(data.get('quantity'))
-            order_item = OrderItem.objects.get(id=item_id, order__customer=request.user.customer, order__complete=False)
+            quantity = int(data.get('quantity'))
 
-            order_item.quantity = new_quantity
+            order_item = OrderItem.objects.get(id=item_id, order__customer=request.user.customer, order__complete=False)
+            order_item.quantity = quantity
             order_item.save()
 
-            item_total = order_item.get_total
-            cart_total = order_item.order.get_cart_total
-
-            return JsonResponse({'item_total': item_total, 'cart_total': cart_total})
+            return JsonResponse({
+                'item_total': order_item.get_total,
+                'cart_total': order_item.order.get_cart_total
+            })
         except Exception as e:
             return JsonResponse({'error': str(e)}, status=400)
 
     return JsonResponse({'error': 'Invalid method'}, status=405)
 
-@login_required(login_url='login')  # Redirects to login if user is not authenticated
-def add_to_cart(request, product_id):
-    product = get_object_or_404(Product, id=product_id)
-
-    try:
-        customer = request.user.customer
-        order, created = Order.objects.get_or_create(customer=customer, complete=False)
-        order_item, created = OrderItem.objects.get_or_create(order=order, Product=product)
-
-        if not created:
-            order_item.quantity += 1
-        order_item.save()
-
-        messages.success(request, f"{product.name} added to cart!")
-    except Customer.DoesNotExist:
-        messages.error(request, "Customer profile not found. Please register or contact support.")
-    
-    return redirect("cart")
-
+# Delete Cart Item
 @csrf_exempt
 def delete_cart_item(request):
     if request.method == 'POST':
@@ -343,3 +325,8 @@ def delete_cart_item(request):
             return JsonResponse({'success': True})
         except OrderItem.DoesNotExist:
             return JsonResponse({'success': False, 'error': 'Item not found'})
+
+
+def category(request):
+    products = Product.objects.all()
+    return render(request, "category.html", {"products": products})

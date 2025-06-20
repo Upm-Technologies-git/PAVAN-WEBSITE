@@ -16,6 +16,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Roboto:wght@300;400;700&display=auto"
     rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
 
   <!-- Favicon -->
   <link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/favicon/apple-touch-icon.png' %}">
@@ -135,7 +136,7 @@
       <ul class="navbar-nav mb-2 mb-lg-0">
         <li class="nav-item">
           <a class="nav-link" href="{% url "category" %}" role="button">
-            T-Shirt
+            Category
           </a>
         </li>
         <li class="nav-item dropdown">
@@ -144,10 +145,7 @@
             Pages
           </a>
           <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="{% url "index" %}">Homepage</a></li>
-            <li><a class="dropdown-item" href="{% url "category" %}">Category</a></li>
-            <li><a class="dropdown-item" href="{% url "cart" %}">Cart</a></li>
-            <li><a class="dropdown-item" href="{% url "checkout" %}">Checkout</a></li>
+            <li><a class="dropdown-item" href="{% url "index" %}">Home</a></li>
             <li><a class="dropdown-item" href="{% url "login" %}">Login</a></li>
           </ul>
         </li>
@@ -253,91 +251,38 @@
                             <div class="d-flex justify-content-between align-items-center">
                                 <p class="fs-4 m-0">{{product.price}}</p>
                             </div>
-                            <div class="border-top mt-4 mb-3 product-option">
-                                <small class="text-uppercase pt-4 d-block fw-bolder">
-                                    <span class="text-muted">Available Sizes (Mens)</span> : <span class="selected-option fw-bold"
-                                        data-pixr-product-option="size">M</span>
-                                </small>
-                                <div class="mt-4 d-flex justify-content-start flex-wrap align-items-start">
-                                            <div class="form-check-option form-check-rounded">
-                                                <input 
-                                                    type="radio" 
-                                                    name="product-option-sizes" 
-                                                    value="S" 
-                                                    id="option-sizes-0">
-                                                <label for="option-sizes-0">
-                                                    
-                                                    <small>S</small>
-                                                </label>
-                                            </div>                    <div class="form-check-option form-check-rounded">
-                                                <input 
-                                                    type="radio" 
-                                                    name="product-option-sizes" 
-                                                    value="SM" 
-                                                    id="option-sizes-1">
-                                                <label for="option-sizes-1">
-                                                    
-                                                    <small>SM</small>
-                                                </label>
-                                            </div>                    <div class="form-check-option form-check-rounded">
-                                                <input 
-                                                    type="radio" 
-                                                    name="product-option-sizes" 
-                                                    value="M" 
-                                                        checked
-                                                    id="option-sizes-2">
-                                                <label for="option-sizes-2">
-                                                    
-                                                    <small>M</small>
-                                                </label>
-                                            </div>                    <div class="form-check-option form-check-rounded">
-                                                <input 
-                                                    type="radio" 
-                                                    name="product-option-sizes" 
-                                                    value="L" 
-                                                    id="option-sizes-3">
-                                                <label for="option-sizes-3">
-                                                    
-                                                    <small>L</small>
-                                                </label>
-                                            </div>                    <div class="form-check-option form-check-rounded">
-                                                <input 
-                                                    type="radio" 
-                                                    name="product-option-sizes" 
-                                                    value="Xl" 
-                                                    id="option-sizes-4">
-                                                <label for="option-sizes-4">
-                                                    
-                                                    <small>XL</small>
-                                                </label>
-                                            </div>                    <div class="form-check-option form-check-rounded">
-                                                <input 
-                                                    type="radio" 
-                                                    name="product-option-sizes" 
-                                                    value="XXL" 
-                                                    id="option-sizes-5">
-                                                <label for="option-sizes-5">
-                                                    
-                                                    <small>XXL</small>
-                                                </label>
-                                            </div>        </div>
-                            </div>
-                            <div class="mb-3">
-                                <small class="text-uppercase pt-4 d-block fw-bolder text-muted">
-                                    Available Designs :
-                                </small>
-                                <div class="mt-4 d-flex justify-content-start flex-wrap align-items-start">
-                                    <picture class="me-2">
-                                        <img class="f-w-24 p-2 bg-light border-bottom border-dark border-2 cursor-pointer" src="{% static 'images/products/product-page-thumb-1.jpeg' %}" alt="HTML Bootstrap Template by Pixel Rocket">
-                                    </picture>
-                                    <picture>
-                                        <img class="f-w-24 p-2 bg-light cursor-pointer" src="{% static 'images/products/product-page-thumb-2.jpeg' %}" alt="HTML Bootstrap Template by Pixel Rocket">
-                                    </picture>
-                                </div>
-                            </div>
-                           <a href="{% url 'add_to_cart' product.id %}" class="btn btn-dark w-100 mt-4 mb-0 hover-lift-sm hover-boxshadow">
+                            <form method="post" action="{% url 'add_to_cart' product.id %}">
+  {% csrf_token %}
+
+  <div class="border-top mt-4 mb-3 product-option">
+    <small class="text-uppercase pt-4 d-block fw-bolder">
+      <span class="text-muted">Available Sizes (Mens)</span> :
+      <span class="selected-option fw-bold" data-pixr-product-option="size">M</span>
+    </small>
+
+    <div class="mt-4 d-flex justify-content-start flex-wrap align-items-start">
+      {% for size in sizes %}
+      <div class="form-check-option form-check-rounded">
+        <input
+          type="radio"
+          name="size"
+          value="{{ size }}"
+          id="option-size-{{ forloop.counter0 }}"
+          {% if size == "M" %} checked {% endif %}
+          required>
+        <label for="option-size-{{ forloop.counter0 }}">
+          <small>{{ size }}</small>
+        </label>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+
+<button type="submit" class="btn btn-dark w-100 mt-4 mb-0 hover-lift-sm hover-boxshadow">
   Add To Shopping Bag
-</a>
+</button>
+</form>
                         
                             <!-- Product Highlights-->
                                 <div class="my-5">
@@ -434,40 +379,37 @@
                 <div class="col-12" data-aos="fade-up">
                     <h3 class="fs-4 fw-bolder mt-7 mb-4">You May Also Like</h3>
                     <!-- Swiper Latest -->
-                    <div class="swiper-container" data-swiper data-options='{
-                        "spaceBetween": 10,
-                        "loop": false,
-                        "autoplay": {
-                          "delay": 5000,
-                          "disableOnInteraction": false
-                        },
-                        "navigation": {
-                          "nextEl": ".swiper-next",
-                          "prevEl": ".swiper-prev"
-                        },   
-                        "breakpoints": {
-                          "600": {
-                            "slidesPerView": 2
-                          },
-                          "1024": {
-                            "slidesPerView": 3
-                          },       
-                          "1400": {
-                            "slidesPerView": 4
-                          }
-                        }
-                      }'>
-                      <div class="swiper-wrapper">
-                        {% for category in categories %}
-  {% for product in category.products.all %}
+<div class="swiper-container" data-swiper data-options='{
+  "spaceBetween": 10,
+  "loop": false,
+  "autoplay": {
+    "delay": 5000,
+    "disableOnInteraction": false
+  },
+  "navigation": {
+    "nextEl": ".swiper-next",
+    "prevEl": ".swiper-prev"
+  },
+  "breakpoints": {
+    "600": { "slidesPerView": 2 },
+    "1024": { "slidesPerView": 3 },
+    "1400": { "slidesPerView": 4 }
+  }
+}'>
+  <div class="swiper-wrapper">
+    {% if related_products %}
+  {% for product in related_products %}
     <div class="swiper-slide">
-      <!-- Card Product -->
       <div class="card border border-transparent position-relative overflow-hidden h-100 transparent">
         <div class="card-img position-relative">
           <div class="card-badges">
-            <span class="badge badge-card"><span class="f-w-2 f-h-2 bg-danger rounded-circle d-block me-1"></span> Sale</span>
+            <span class="badge badge-card">
+              <span class="f-w-2 f-h-2 bg-danger rounded-circle d-block me-1"></span> Sale
+            </span>
           </div>
-          <span class="position-absolute top-0 end-0 p-2 z-index-20 text-muted"><i class="ri-heart-line"></i></span>
+          <span class="position-absolute top-0 end-0 p-2 z-index-20 text-muted">
+            <i class="ri-heart-line"></i>
+          </span>
           <picture class="position-relative overflow-hidden d-block bg-light">
             <img class="w-100 img-fluid position-relative z-index-10"
                  title="{{ product.name }}"
@@ -476,25 +418,19 @@
           </picture>
         </div>
         <div class="card-body px-0">
-          <a class="text-decoration-none link-cover" href="{% url 'product_detail' product.id %}">
+          <a class="text-decoration-none link-cover" href="{% url 'product' product.id %}">
             {{ product.name }}
           </a>
-          <small class="text-muted d-block">4 colours, 10 sizes</small>
-          <p class="mt-2 mb-0 small">
-            <s class="text-muted">$329.99</s>
-            <span class="text-danger">${{ product.price|floatformat:2 }}</span>
-          </p>
         </div>
       </div>
-      <!--/ Card Product -->
     </div>
   {% endfor %}
-{% endfor %}
+{% else %}
+  <p class="text-muted">No related products found.</p>
+{% endif %}
 
-                              </div>
-                              <!--/ Card Product-->
-                            </div>
-                      </div>
+  </div>
+</div>
                     
                       
                 <!-- / Related Products-->
@@ -664,7 +600,7 @@
                 <div>
                     <ul class="list-unstyled">
                         <li class="d-inline-block me-1"><a class="text-decoration-none text-dark-hover transition-all"
-                                href="#"><i class="ri-instagram-fill"></i></a></li>
+                                href="https://www.instagram.com/wabi.clothing?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="><i class="ri-instagram-fill"></i></a></li>
                         <li class="d-inline-block me-1"><a class="text-decoration-none text-dark-hover transition-all"
                                 href="#"><i class="ri-facebook-fill"></i></a></li>
                         <li class="d-inline-block me-1"><a class="text-decoration-none text-dark-hover transition-all"
@@ -681,7 +617,8 @@
     <!-- Theme JS -->
     <!-- Vendor JS -->
     <script src="{% static 'js/vendor.bundle.js' %}"></script>
-    
+    <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+
     <!-- Theme JS -->
     <script src="{% static 'js/theme.bundle.js' %}"></script>
 </body>

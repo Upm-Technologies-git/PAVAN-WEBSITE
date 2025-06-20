@@ -3,6 +3,8 @@ import uuid
 from django.utils.timezone import now
 from django.db import models
 from django.contrib.auth.models import User
+from django.urls import reverse
+
 
 # Function to generate file names dynamically
 def getFileName(instance, filename):
@@ -18,6 +20,19 @@ class Customer(models.Model):
     def __str__(self):
         return self.user.username 
 
+class Category(models.Model):
+    name = models.CharField(max_length=200, null=True)
+    price = models.FloatField()
+    digital = models.BooleanField(default=False, null=True, blank=False)
+    image = models.ImageField(null=True, blank=True, upload_to=getFileName)
+
+    def __str__(self):
+        return f'Category {self.name}'
+
+    @property
+    def imageURL(self):
+        return self.image.url if self.image else ''
+
 class Product(models.Model):
     name = models.CharField(max_length=200, null=True)
     price = models.FloatField()
@@ -25,6 +40,7 @@ class Product(models.Model):
     image = models.ImageField(null=True, blank=True, upload_to=getFileName)  # Primary display image
     is_featured = models.BooleanField(default=False)  # Add this line
     description = models.TextField(blank=True, null=True)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products',null=True,blank=True)
 
     def __str__(self):
         return f'Product {self.name}'
@@ -61,13 +77,12 @@ class Order(models.Model):
         return f"Order {self.id}"
 
     @property
-    def get_cart_total(self):
-        total = sum([item.get_total for item in self.orderitem_set.all()])
-        return total
+    def get_total(self):
+        return self.product.price * self.quantity
 
     @property
-    def get_cart_items(self):
-        return sum(item.quantity for item in self.orderitem_set.all())
+    def get_cart_total(self):
+        return sum(item.get_total() for item in self.orderitem_set.all())
 
     def save(self, *args, **kwargs):
         if not self.order_number:
@@ -75,17 +90,17 @@ class Order(models.Model):
         super().save(*args, **kwargs)
 
 class OrderItem(models.Model):
-    Product = models.ForeignKey(Product, on_delete=models.SET_NULL, blank=True, null=True)
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, blank=True, null=True)
     order = models.ForeignKey(Order, on_delete=models.CASCADE, default=0)
-    quantity = models.IntegerField(default=1, blank=True)
+    quantity = models.IntegerField(default=1,blank=True)
+    size = models.CharField(max_length=5, blank=True, null=True)
     date_added = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return f"OrderItem {self.Product} ({self.quantity})"
-
-    @property
     def get_total(self):
-        return self.Product.price * self.quantity
+        return self.product.price * self.quantity
+
+    def __str__(self):
+        return f"{self.product.name} x {self.quantity} ({self.size})"
 
 class ShippingAddress(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, blank=True, null=True)
@@ -93,6 +108,7 @@ class ShippingAddress(models.Model):
     address = models.CharField(max_length=200, null=True)
     city = models.CharField(max_length=200, null=True)
     state = models.CharField(max_length=200, null=True)
+    phone = models.CharField(max_length=15, blank=True, null=True)
     zipcode = models.CharField(max_length=200, null=True)
     date_added = models.DateTimeField(auto_now_add=True)
 
@@ -115,18 +131,7 @@ class ContactUs(models.Model):
     def __str__(self):
         return f'User {self.firstname or "Anonymous"}'
    
-class Category(models.Model):
-    name = models.CharField(max_length=200, null=True)
-    price = models.FloatField()
-    digital = models.BooleanField(default=False, null=True, blank=False)
-    image = models.ImageField(null=True, blank=True, upload_to=getFileName)
 
-    def __str__(self):
-        return f'Category {self.name}'
-
-    @property
-    def imageURL(self):
-        return self.image.url if self.image else ''
     
 class Banner(models.Model):
     title = models.CharField(max_length=200)

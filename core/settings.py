@@ -144,6 +144,14 @@ JAZZMIN_SETTINGS = {
 }
 
 AUTHENTICATION_BACKENDS = [
-    'dressapp.backends.EmailBackend',  # Replace 'yourapp' with your app name
+    'dressapp.backends.EmailBackend',  
     'django.contrib.auth.backends.ModelBackend',
 ]
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'wabiwabiclothing@gmail.com'
+EMAIL_HOST_PASSWORD = 'mljyvfvedtirqokd'
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
