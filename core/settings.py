@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "dressapp",
+    'widget_tweaks',
     
 ]
 
@@ -108,7 +109,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = "UTC"
+TIME_ZONE = "Asia/Kolkata"
 
 USE_I18N = True
 
@@ -155,3 +156,5 @@ EMAIL_HOST_USER = 'wabiwabiclothing@gmail.com'
 EMAIL_HOST_PASSWORD = 'mljyvfvedtirqokd'
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+LOGIN_URL = '/login/'

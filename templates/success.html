@@ -15,7 +15,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
 
   <!-- Favicon -->
-  <link rel="icon" href="{% static 'images/favicon/favicon-32x32.png' %}" type="image/png">
+  <link rel="icon" href="{% static 'images/favicon/favicon.ico' %}" type="image/png">
+  <link rel="icon" href="{% static 'images/favicon/favicon.ico' %}" type="image/x-icon">
+
 
   <!-- CSS -->
   <link rel="stylesheet" href="{% static 'css/libs.bundle.css' %}" />
@@ -26,7 +28,7 @@
   <section class="py-5">
     <div class="container text-center">
       <a class="navbar-brand fw-bold fs-3 mb-4 d-inline-block" href="{% url 'index' %}">
-        <img src="{% static 'images/logos/wabi-logo.png' %}" alt="Logo" height="40">
+        <img src="{% static 'images/logos/wabi-logo.png' %}" alt="Logo" class="f-w-7" style="height: 40px;">
       </a>
 
       <div class="alert alert-success p-4 rounded shadow-sm">

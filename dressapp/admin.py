@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils.html import format_html
 from .models import (
     Customer, Product, Order, OrderItem, ShippingAddress,
-    Newsletter, ContactUs, Category,Banner,FeaturedCategory,InstagramImage,ProductImage
+    Newsletter, ContactUs,Banner,FeaturedCategory,InstagramImage,ProductImage,Review
 )
 
 # Inline for order items inside the order detail page
@@ -36,15 +36,15 @@ class OrderAdmin(admin.ModelAdmin):
     list_display = ['order_number', 'customer', 'status', 'complete', 'payment_method', 'transaction_id', 'date_ordered', 'get_cart_total']
     list_filter = ['status', 'complete', 'date_ordered']
     search_fields = ['order_number', 'transaction_id', 'customer__name']
-    readonly_fields = ['order_number', 'transaction_id', 'date_ordered', 'get_cart_total', 'get_cart_items']
+    readonly_fields = ['order_number', 'transaction_id', 'date_ordered', 'get_cart_total', 'get_cart_items','shipping_charge']
     inlines = [OrderItemInline, ShippingInline]
 
     def get_cart_total(self, obj):
-        return f"₹{float(obj.get_cart_total):.2f}"
+        return f"₹{float(obj.get_cart_total) +99:.2f}"
     get_cart_total.short_description = 'Total Amount'
 
     def get_cart_items(self, obj):
-        return obj.get_cart_items
+        return obj.get_cart_items()  
     get_cart_items.short_description = 'Total Items'
 
 @admin.register(OrderItem)
@@ -55,8 +55,7 @@ class OrderItemAdmin(admin.ModelAdmin):
 
 @admin.register(ShippingAddress)
 class ShippingAddressAdmin(admin.ModelAdmin):
-    list_display = ['customer', 'order', 'address', 'city', 'state', 'zipcode', 'phone', 'date_added']
-    search_fields = ['customer__name', 'order__order_number', 'city', 'state']
+    list_display = ('first_name', 'last_name', 'address', 'city', 'state', 'zipcode', 'phone', 'date_added')
 
 @admin.register(Customer)
 class CustomerAdmin(admin.ModelAdmin):
@@ -86,17 +85,7 @@ class ProductAdmin(admin.ModelAdmin):
         return "-"
     image_tag.short_description = 'Main Image'
 
-@admin.register(Category)
-class CategoryAdmin(admin.ModelAdmin):
-    list_display = ['name', 'price', 'digital', 'image_tag']
-    search_fields = ['name']
-    readonly_fields = ['image_tag']
 
-    def image_tag(self, obj):
-        if obj.image:
-            return format_html('<img src="{}" width="50" />', obj.image.url)
-        return "-"
-    image_tag.short_description = 'Image'
 
 @admin.register(Newsletter)
 class NewsletterAdmin(admin.ModelAdmin):
@@ -125,3 +114,9 @@ class FeaturedCategoryAdmin(admin.ModelAdmin):
 class InstagramImageAdmin(admin.ModelAdmin):
     list_display = ['alt_text', 'active', 'order']
     list_editable = ['active', 'order']
+
+@admin.register(Review)
+class ReviewAdmin(admin.ModelAdmin):
+    list_display = ('user', 'product', 'rating', 'comment', 'created_at')
+    list_filter = ('rating', 'created_at')
+    search_fields = ('user__username', 'product__name', 'comment')

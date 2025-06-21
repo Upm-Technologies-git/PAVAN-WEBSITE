@@ -12,10 +12,14 @@ from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import send_mail
 from django.conf import settings
+from .forms import ReviewForm
+from django.db.models import Avg
+from django.views.decorators.cache import never_cache
+import re
 
 from .models import (
     Product, ContactUs, Customer, Order, OrderItem,
-    ShippingAddress, Newsletter, Category, Banner, FeaturedCategory, InstagramImage
+    ShippingAddress, Newsletter,  Banner, FeaturedCategory, InstagramImage,Review
 )
 
 # Homepage
@@ -83,19 +87,35 @@ def register(request):
 def product(request, pk):
     product = get_object_or_404(Product, pk=pk)
     sizes = ['S', 'SM', 'M', 'L', 'XL', 'XXL']
-    categories = Category.objects.prefetch_related('products').all()
+    related_products = Product.objects.filter(category=product.category).exclude(id=product.id)[:10]
+    reviews = Review.objects.filter(product=product).order_by('-rating', '-created_at')
+    review_form = ReviewForm()
+    average_rating = reviews.aggregate(avg=Avg('rating'))['avg'] or 0
+    average_rating = round(average_rating, 1)
 
-    # ✅ Get related products: same category, exclude current
-    related_products = Product.objects.filter(
-        category=product.category
-    ).exclude(id=product.id)[:10]
+
+    if request.method == 'POST':
+        if request.user.is_authenticated:
+            review_form = ReviewForm(request.POST)
+            if review_form.is_valid():
+                review = review_form.save(commit=False)
+                review.user = request.user
+                review.product = product
+                review.save()
+                return redirect('product', pk=product.pk)
+        else:
+            return redirect('login')
 
     return render(request, 'product.html', {
         'product': product,
         'sizes': sizes,
-        'categories': categories,
-        'related_products': related_products,  
+        'related_products': related_products,
+        'reviews': reviews,
+        'average_rating': average_rating,
+        'review_form': review_form,
     })
+
+
 # Forgot Password View
 def forgot(request):
     return render(request, "forgotten-password.html")
@@ -183,11 +203,13 @@ def process_order(request):
     ShippingAddress.objects.create(
         customer=customer,
         order=order,
-        address=data['address'],
+        first_name=data.get('first_name', ''),
+        last_name=data.get('last_name', ''),
+        address=data.get('address', ''),
         city=data.get('city', ''),
         state=data.get('state', ''),
         zipcode=data.get('zip', ''),
-        phone=data.get('phone')
+        phone=data.get('phone', '')
     )
 
     for item in data.get('items', []):
@@ -243,7 +265,8 @@ def process_payment(request):
                 return redirect("checkout_payment")
 
         messages.error(request, "Invalid payment method.")
-
+        order.shipping_charge = 99  # Set fixed shipping fee
+        order.save()
     return redirect("checkout_payment")
 
 # Success Page
@@ -252,8 +275,12 @@ def order_success(request, order_number):
     return render(request, 'success.html', {'order': order})
 
 # Profile Update
+@never_cache
 @login_required
 def profile(request):
+    if not request.user.is_authenticated:
+        return redirect('index')
+    
     if request.method == 'POST':
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
@@ -332,3 +359,46 @@ def delete_cart_item(request):
 def category(request):
     products = Product.objects.all()
     return render(request, "category.html", {"products": products})
+
+
+def normalize(text):
+    return re.sub(r'[^a-z0-9\s]', '', text.lower())
+
+def search_results(request):
+    query = request.GET.get('q', '').strip()
+    normalized_query = normalize(query)
+
+    matched_products = []
+    if normalized_query:
+        for product in Product.objects.all():
+            if normalized_query in normalize(product.name):
+                matched_products.append(product)
+
+    if not matched_products:
+        messages.error(request, "No product found matching your search.")
+        return redirect('index')
+
+    elif len(matched_products) == 1:
+        return redirect('product', product_id=matched_products[0].id)
+
+    else:
+        # Store matched product IDs and query in session for use in category view
+        request.session['search_matched_ids'] = [product.id for product in matched_products]
+        request.session['search_query'] = query
+        return redirect('category_from_search')
+    
+@login_required
+def category_from_search(request):
+    ids = request.session.get('search_matched_ids', [])
+    query = request.session.get('search_query', '')
+
+    if not ids:
+        messages.warning(request, "Search session expired.")
+        return redirect('index')
+
+    products = Product.objects.filter(id__in=ids).order_by('name')  # You can change sort here
+    return render(request, 'category.html', {
+        'products': products,
+        'search_query': query,
+        'filtered': True
+    })

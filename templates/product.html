@@ -1,5 +1,6 @@
 {% load static %}
-<!doctype html>
+{% load widget_tweaks %}
+<!Doctype html>
 <html lang="en">
 
 <!-- Head -->
@@ -17,12 +18,15 @@
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Roboto:wght@300;400;700&display=auto"
     rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css" />
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
 
   <!-- Favicon -->
   <link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/favicon/apple-touch-icon.png' %}">
   <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/favicon/favicon-32x32.png' %}">
   <link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicon/favicon-16x16.png' %}">
   <link rel="mask-icon" href="{% static 'images/favicon/safari-pinned-tab.svg' %}" color="#5bbad5">
+  <link rel="icon" href="{% static 'images/favicon/favicon.ico' %}" type="image/x-icon">
+
   <meta name="msapplication-TileColor" content="#da532c">
   <meta name="theme-color" content="#ffffff">
 
@@ -41,125 +45,161 @@
       .simplebar-content-wrapper {
         overflow: auto;
       }
+
+
     </style>
   </noscript>
 
   <!-- Page Title -->
-  <title>OldSkool | Bootstrap 5 HTML Template</title>
+  <title>Wabi Clothing | Product </title>
 
+  <style>
+.star-rating {
+  display: inline-flex;
+  direction: rtl; /* Make labels clickable left-to-right visually */
+}
+
+.star-rating input[type="radio"] {
+  display: none;
+}
+
+.star-rating label {
+  font-size: 2rem;
+  color: #ccc;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.star-rating input[type="radio"]:checked ~ label,
+.star-rating label:hover,
+.star-rating label:hover ~ label {
+  color: #ffc107;
+}
+@media (max-width: 576px) {
+  .navbar-nav.flex-row {
+    flex-direction: column !important;
+    align-items: center;
+  }
+}
+/* Wrapper */
+.search-form {
+  max-width: 0;
+  overflow: hidden;
+  transition: max-width 0.4s ease;
+  white-space: nowrap;
+}
+
+/* Active state */
+.search-form.active {
+  max-width: 400px;
+}
+
+/* Input style */
+.search-input {
+  width: 100%;
+  min-width: 180px;
+  height: 36px;
+  border-radius: 6px;
+  padding: 0 12px;
+  font-size: 14px;
+  border: 1px solid #ced4da;
+}
+
+/* Buttons aligned and sized */
+.search-form .btn {
+  height: 36px;
+  padding: 0 12px;
+  font-size: 14px;
+  line-height: 1.4;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Optional: icon size fix */
+.search-form .btn i {
+  font-size: 16px;
+}
+    </style>
 </head>
 <body class="">
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white border-0 shadow-sm PY-1">
+  <div class="container-fluid">
 
-    <!-- Navbar -->
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white flex-column border-0  ">
-        <div class="container-fluid">
-            <div class="w-100">
-                <div class="d-flex justify-content-between align-items-center flex-wrap">
-    
-                    <!-- Logo-->
-                    <a class="navbar-brand fw-bold fs-3 flex-shrink-0 order-0 align-self-center justify-content-center d-flex mx-0 px-0" href="{% url "index" %}">
-  <div class="d-flex align-items-center">
-    <img src="{% static 'images/logos/wabi-logo.png' %}" alt="Logo" height="40">
-  </div>
-</a>
+    <!-- Logo + Toggle + Collapse all grouped -->
+    <div class="d-flex w-100 flex-column flex-lg-row justify-content-between align-items-center">
+      <!-- Top row: logo + toggler -->
+      <!-- Logo, Center Title, and Toggle -->
+      <div class="d-flex w-100 justify-content-between align-items-center position-relative">
+        <!-- Logo Left -->
+        <a class="navbar-brand fw-bold fs-3 m-0 p-0" href="{% url 'index' %}">
+          <img src="{% static 'images/logos/wabi-logo.png' %}" alt="Logo" style="height: 40px;">
+        </a>
 
-                    <!-- / Logo-->
-    
-                    <!-- Navbar Icons-->
-                    <ul class="list-unstyled mb-0 d-flex align-items-center order-1 order-lg-2 nav-sidelinks">
-    
-                        <!-- Mobile Nav Toggler-->
-                        <li class="d-lg-none">
-                            <span class="nav-link text-body d-flex align-items-center cursor-pointer" data-bs-toggle="collapse"
-                                data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false"
-                                aria-label="Toggle navigation"><i class="ri-menu-line ri-lg me-1"></i> Menu</span>
-                        </li>
-                        <!-- /Mobile Nav Toggler-->
-    
-                        <!-- Navbar Search-->
-                        <li class="d-none d-sm-block">
-                            <span class="nav-link text-body search-trigger cursor-pointer">Search</span>
-    
-                            <!-- Search navbar overlay-->
-                            <div class="navbar-search d-none">
-                                <div class="input-group mb-3 h-100">
-                                    <span class="input-group-text px-4 bg-transparent border-0"><i
-                                            class="ri-search-line ri-lg"></i></span>
-                                    <input type="text" class="form-control text-body bg-transparent border-0"
-                                        placeholder="Enter your search terms...">
-                                    <span
-                                        class="input-group-text px-4 cursor-pointer disable-child-pointer close-search bg-transparent border-0"><i
-                                            class="ri-close-circle-line ri-lg"></i></span>
-                                </div>
-                            </div>
-                            <div class="search-overlay"></div>
-                            <!-- / Search navbar overlay-->
-    
-                        </li>
-                        <!-- /Navbar Search-->
-    
-                        <!-- Navbar Login-->
-                        <li class="ms-1 d-none d-lg-inline-block">
-                            <a class="nav-link text-body" href="{% url "login" %}">
-                                Account
-                            </a>
-                        </li>
-                        <!-- /Navbar Login-->
-    
-                        <!-- Navbar Cart Icon-->
-                        <li class="ms-1 d-inline-block position-relative dropdown-cart">
-                            <button class="nav-link me-0 disable-child-pointer border-0 p-0 bg-transparent text-body"
-                                type="button">
-                                Bag 
-                            </button>
-                            <div class="cart-dropdown dropdown-menu">
-                            
-                                <!-- Cart Header-->
-                                <div class="d-flex justify-content-between align-items-center border-bottom pt-3 pb-4">
-                                    <h6 class="fw-bolder m-0">Cart Summary</h6>
-                                    <i class="ri-close-circle-line text-muted ri-lg cursor-pointer btn-close-cart"></i>
-                                </div>
-
-                        </li>
-                        <!-- /Navbar Cart Icon-->
-    
-                    </ul>
-                    <!-- Navbar Icons-->                
-    
-                    <!-- Main Navigation-->
-                    <div class="flex-shrink-0 collapse navbar-collapse navbar-collapse-light w-auto flex-grow-1 order-2 order-lg-1"
-                        id="navbarNavDropdown">
-    
-                        <!-- Menu-->
-                         <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
-      <ul class="navbar-nav mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link" href="{% url "category" %}" role="button">
-            Category
-          </a>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-            aria-expanded="false">
-            Pages
-          </a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="{% url "index" %}">Home</a></li>
-            <li><a class="dropdown-item" href="{% url "login" %}">Login</a></li>
-          </ul>
-        </li>
-      </ul>
-    </div>
-                    <!-- / Main Navigation-->
-    
-    
-                </div>
-            </div>
+        <!-- Center Title -->
+        <div class="position-absolute start-50 translate-middle-x">
+          <span class="fw-bold fs-4 text-dark">WABI</span>
         </div>
-    </nav>
-    <!-- / Navbar-->    <!-- / Navbar-->
 
+        <!-- Toggle Right -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
+          aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+
+
+      <!-- Collapsible Menu -->
+      <div class="collapse navbar-collapse mt-2 mt-lg-0 w-100" id="mainNavbar">
+        <ul class="navbar-nav mx-auto mb-2 mb-lg-0 text-center gap-2 w-100 justify-content-center">
+          <li class="nav-item">
+            <a class="nav-link fw-medium px-3" href="{% url 'index' %}">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link fw-medium px-3" href="{% url 'category' %}">Category</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link fw-medium px-3" href="{% url 'cart' %}">Cart</a>
+          </li>
+
+          <!-- Mobile only login -->
+          <li class="nav-item d-lg-none">
+            {% if request.user.is_authenticated %}
+              <a class="nav-link fw-medium px-3 text-nowrap" href="{% url 'profile' %}">My Account</a>
+            {% else %}
+              <a class="nav-link fw-medium px-3" href="{% url 'login' %}">Login</a>
+            {% endif %}
+          </li>
+
+          <!-- Search (desktop only) -->
+          <li class="nav-item d-none d-sm-flex align-items-center position-relative">
+            <span class="nav-link text-body cursor-pointer px-3 fw-medium search-trigger">
+              <i class="ri-search-line align-middle me-1"></i>Search
+            </span>
+
+            <form method="get" action="{% url 'search_redirect' %}" class="search-form d-flex align-items-center ms-2">
+              <input type="text" name="q" class="form-control search-input" placeholder="Search..." />
+              <button type="submit" class="btn btn-dark btn-sm ms-2">Go</button>
+            </form>
+          </li>
+
+          <!-- Desktop login -->
+          <li class="nav-item d-none d-lg-block me-3">
+            {% if request.user.is_authenticated %}
+              <a class="nav-link fw-medium px-3 text-body text-nowrap" href="{% url 'profile' %}">My Account</a>
+            {% else %}
+              <a class="nav-link fw-medium px-3 text-body" href="{% url 'login' %}">Login</a>
+            {% endif %}
+          </li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</nav>
+<!-- / Navbar -->
     <!-- Main Section-->
     <section class="mt-0 ">
         <!-- Page Content Goes Here -->            
@@ -170,8 +210,9 @@
                 <nav class="m-0" aria-label="breadcrumb">
                     <ol class="breadcrumb m-0">
                       <li class="breadcrumb-item breadcrumb-light"><a href="{% url "index" %}">Home</a></li>
-                      <li class="breadcrumb-item breadcrumb-light"><a href="{% url "category" %}">T-Shirts</a></li>
-                      <li class="breadcrumb-item  breadcrumb-light active" aria-current="page">Osaka Japan Mens T-Shirt</li>
+                      <li class="breadcrumb-item breadcrumb-light"><a href="{% url "category" %}">category</a></li>
+                      <li class="breadcrumb-item breadcrumb-light active" aria-current="page">{{ product.name }}</li>
+
                     </ol>
                 </nav>            </div>
         </div>
@@ -228,22 +269,15 @@
                                 data-pixr-scrollto
                                 data-target=".reviews">
                                 <!-- Review Stars Small-->
-                                <div class="rating position-relative d-table">
-                                    <div class="position-absolute stars" style="width: 80%">
-                                        <i class="ri-star-fill text-dark mr-1"></i>
-                                        <i class="ri-star-fill text-dark mr-1"></i>
-                                        <i class="ri-star-fill text-dark mr-1"></i>
-                                        <i class="ri-star-fill text-dark mr-1"></i>
-                                        <i class="ri-star-fill text-dark mr-1"></i>
-                                    </div>
-                                    <div class="stars">
-                                        <i class="ri-star-fill mr-1 text-muted opacity-25"></i>
-                                        <i class="ri-star-fill mr-1 text-muted opacity-25"></i>
-                                        <i class="ri-star-fill mr-1 text-muted opacity-25"></i>
-                                        <i class="ri-star-fill mr-1 text-muted opacity-25"></i>
-                                        <i class="ri-star-fill mr-1 text-muted opacity-25"></i>
-                                    </div>
-                                </div>        <small class="text-muted d-inline-block ms-2 fs-bolder">(105 reviews)</small>
+                                <div class="rating d-flex align-items-center">
+  {% for i in "12345" %}
+    <i class="ri-star-fill {% if forloop.counter <= average_rating %}text-warning{% else %}text-muted{% endif %} fs-5"></i>
+  {% endfor %}
+  <small class="text-muted ms-2">{{ average_rating }} / 5</small>
+  <small class="text-muted d-inline-block ms-2 fs-bolder">
+    ({{ product.reviews.count }} reviews)
+  </small>
+</div>
                             </div>
                             </div>
                             
@@ -291,20 +325,21 @@
                                     <div class="row">
                                         <div class="col-12 col-md-4">
                                             <div class="text-center px-2">
-                                                <i class="ri-24-hours-line ri-2x"></i>
-                                                <small class="d-block mt-1">Next-day Delivery</small>
+                                                <i class="ri-money-dollar-circle-line ri-2x" title="Cash on Delivery"></i>
+                                                <small class="d-block mt-1">COD Available</small>
                                             </div>
                                         </div>
                                         <div class="col-12 col-md-4">
                                             <div class="text-center px-2">
-                                                <i class="ri-secure-payment-line ri-2x"></i>
-                                                <small class="d-block mt-1">Secure Checkout</small>
+                                                <i class="ri-timer-flash-line ri-2x" title="Super Fast Delivery"></i>
+                                                <small class="d-block mt-1">Super Fast Delivery</small>
                                             </div>
                                         </div>
                                         <div class="col-12 col-md-4">
                                             <div class="text-center px-2">
-                                                <i class="ri-service-line ri-2x"></i>
-                                                <small class="d-block mt-1">Free Returns</small>
+                                                <i class="ri-check-double-line ri-2x " title="Double Checked Quality"></i>
+
+                                                <small class="d-block mt-1">Quality Checked</small>
                                             </div>
                                         </div>
                                     </div>
@@ -335,12 +370,12 @@
                                       <div class="accordion-body">
                                           <ul class="list-group list-group-flush">
                                               <li class="list-group-item d-flex border-0 row g-0 px-0">
-                                                  <span class="col-4 fw-bolder">Composition</span>
-                                                  <span class="col-7 offset-1">98% Cotton, 2% elastane</span>
+                                                  <span class="col-4 fw-bolder">Fabric& feel</span>
+                                                  <span class="col-7 offset-1">100% cotton — no blends, no compromises</span>
                                               </li>
                                               <li class="list-group-item d-flex border-0 row g-0 px-0">
-                                                  <span class="col-4 fw-bolder">Care</span>
-                                                  <span class="col-7 offset-1">Professional dry clean only. Do not bleach. Do not iron.</span>
+                                                  <span class="col-4 fw-bolder">Washing and handling</span>
+                                                  <span class="col-7 offset-1">wash cold. Wear often. Treat it gently</span>
                                               </li>
                                           </ul>
                                       </div>
@@ -357,11 +392,11 @@
                                         <ul class="list-group list-group-flush">
                                             <li class="list-group-item d-flex border-0 row g-0 px-0">
                                                 <span class="col-4 fw-bolder">Delivery</span>
-                                                <span class="col-7 offset-1">Standard delivery free for orders over $99. Next day delivery $9.99</span>
+                                                <span class="col-7 offset-1">Domestic delivery within 4-6 working days. <br>Flat ₹99 shipping fee</span>
                                             </li>
                                             <li class="list-group-item d-flex border-0 row g-0 px-0">
                                                 <span class="col-4 fw-bolder">Returns</span>
-                                                <span class="col-7 offset-1">30 day return period. See our <a class="text-link-border" href="#">terms & conditions.</a></span>
+                                                <span class="col-7 offset-1">7 day return period. </span>
                                             </li>
                                         </ul>
                                     </div>
@@ -437,159 +472,85 @@
                       
                 <!-- / Related Products-->
 
-                <!-- Reviews-->
-                <div class="col-12" data-aos="fade-up">
-                    <h3 class="fs-4 fw-bolder mt-7 mb-4 reviews">Reviews</h3>
-                    
-                    <!-- Review Summary-->
-                    <div class="bg-light p-5 justify-content-between d-flex flex-column flex-lg-row">
-                        <div class="d-flex flex-column align-items-center mb-4 mb-lg-0">
-                            <div class="bg-dark text-white f-w-24 f-h-24 d-flex rounded-circle align-items-center justify-content-center fs-2 fw-bold mb-3">4.3</div>
-                            <!-- Review Stars Medium-->
-                            <div class="rating position-relative d-table">
-                                <div class="position-absolute stars" style="width: 88%">
-                                    <i class="ri-star-fill text-dark ri-2x mr-1"></i>
-                                    <i class="ri-star-fill text-dark ri-2x mr-1"></i>
-                                    <i class="ri-star-fill text-dark ri-2x mr-1"></i>
-                                    <i class="ri-star-fill text-dark ri-2x mr-1"></i>
-                                    <i class="ri-star-fill text-dark ri-2x mr-1"></i>
-                                </div>
-                                <div class="stars">
-                                    <i class="ri-star-fill ri-2x mr-1 text-muted opacity-25"></i>
-                                    <i class="ri-star-fill ri-2x mr-1 text-muted opacity-25"></i>
-                                    <i class="ri-star-fill ri-2x mr-1 text-muted opacity-25"></i>
-                                    <i class="ri-star-fill ri-2x mr-1 text-muted opacity-25"></i>
-                                    <i class="ri-star-fill ri-2x mr-1 text-muted opacity-25"></i>
-                                </div>
-                            </div>    </div>
-                        <div class="d-flex flex-grow-1 flex-column ms-lg-8">
-                            <div class="d-flex align-items-center justify-content-start mb-2">
-                                <div class="f-w-20">
-                                    <!-- Review Stars Small-->
-                                    <div class="rating position-relative d-table">
-                                        <div class="position-absolute stars" style="width: 100%">
-                                            <i class="ri-star-fill text-dark mr-1"></i>
-                                            <i class="ri-star-fill text-dark mr-1"></i>
-                                            <i class="ri-star-fill text-dark mr-1"></i>
-                                            <i class="ri-star-fill text-dark mr-1"></i>
-                                            <i class="ri-star-fill text-dark mr-1"></i>
-                                        </div>
-                                        <div class="stars">
-                                            <i class="ri-star-fill mr-1 text-muted opacity-25"></i>
-                                            <i class="ri-star-fill mr-1 text-muted opacity-25"></i>
-                                            <i class="ri-star-fill mr-1 text-muted opacity-25"></i>
-                                            <i class="ri-star-fill mr-1 text-muted opacity-25"></i>
-                                            <i class="ri-star-fill mr-1 text-muted opacity-25"></i>
-                                        </div>
-                                    </div>            </div>
-                                <div class="progress d-flex flex-grow-1 mx-4 f-h-1">
-                                    <div class="progress-bar bg-dark" role="progressbar" style="width: 80%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                                <span class="fw-bold small d-block f-w-4 text-end">55</span>
-                            </div>
-                            <div class="d-flex align-items-center justify-content-start mb-2">
-                                <div class="f-w-20">
-                                    <!-- Review Stars Small-->
-                                    <div class="rating position-relative d-table">
-                                        <div class="position-absolute stars" style="width: 80%">
-                                            <i class="ri-star-fill text-dark mr-1"></i>
-                                            <i class="ri-star-fill text-dark mr-1"></i>
-                                            <i class="ri-star-fill text-dark mr-1"></i>
-                                            <i class="ri-star-fill text-dark mr-1"></i>
-                                            <i class="ri-star-fill text-dark mr-1"></i>
-                                        </div>
-                                        <div class="stars">
-                                            <i class="ri-star-fill mr-1 text-muted opacity-25"></i>
-                                            <i class="ri-star-fill mr-1 text-muted opacity-25"></i>
-                                            <i class="ri-star-fill mr-1 text-muted opacity-25"></i>
-                                            <i class="ri-star-fill mr-1 text-muted opacity-25"></i>
-                                            <i class="ri-star-fill mr-1 text-muted opacity-25"></i>
-                                        </div>
-                                    </div>            </div>
-                                <div class="progress d-flex flex-grow-1 mx-4 f-h-1">
-                                    <div class="progress-bar bg-dark" role="progressbar" style="width: 60%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                                <span class="fw-bold small d-block f-w-4 text-end">32</span>
-                            </div>
-                            <div class="d-flex align-items-center justify-content-start mb-2">
-                                <div class="f-w-20">
-                                    <!-- Review Stars Small-->
-                                    <div class="rating position-relative d-table">
-                                        <div class="position-absolute stars" style="width: 60%">
-                                            <i class="ri-star-fill text-dark mr-1"></i>
-                                            <i class="ri-star-fill text-dark mr-1"></i>
-                                            <i class="ri-star-fill text-dark mr-1"></i>
-                                            <i class="ri-star-fill text-dark mr-1"></i>
-                                            <i class="ri-star-fill text-dark mr-1"></i>
-                                        </div>
-                                        <div class="stars">
-                                            <i class="ri-star-fill mr-1 text-muted opacity-25"></i>
-                                            <i class="ri-star-fill mr-1 text-muted opacity-25"></i>
-                                            <i class="ri-star-fill mr-1 text-muted opacity-25"></i>
-                                            <i class="ri-star-fill mr-1 text-muted opacity-25"></i>
-                                            <i class="ri-star-fill mr-1 text-muted opacity-25"></i>
-                                        </div>
-                                    </div>            </div>
-                                <div class="progress d-flex flex-grow-1 mx-4 f-h-1">
-                                    <div class="progress-bar bg-dark" role="progressbar" style="width: 30%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                                <span class="fw-bold small d-block f-w-4 text-end">15</span>
-                            </div>
-                            <div class="d-flex align-items-center justify-content-start mb-2">
-                                <div class="f-w-20">
-                                    <!-- Review Stars Small-->
-                                    <div class="rating position-relative d-table">
-                                        <div class="position-absolute stars" style="width: 40%">
-                                            <i class="ri-star-fill text-dark mr-1"></i>
-                                            <i class="ri-star-fill text-dark mr-1"></i>
-                                            <i class="ri-star-fill text-dark mr-1"></i>
-                                            <i class="ri-star-fill text-dark mr-1"></i>
-                                            <i class="ri-star-fill text-dark mr-1"></i>
-                                        </div>
-                                        <div class="stars">
-                                            <i class="ri-star-fill mr-1 text-muted opacity-25"></i>
-                                            <i class="ri-star-fill mr-1 text-muted opacity-25"></i>
-                                            <i class="ri-star-fill mr-1 text-muted opacity-25"></i>
-                                            <i class="ri-star-fill mr-1 text-muted opacity-25"></i>
-                                            <i class="ri-star-fill mr-1 text-muted opacity-25"></i>
-                                        </div>
-                                    </div>            </div>
-                                <div class="progress d-flex flex-grow-1 mx-4 f-h-1">
-                                    <div class="progress-bar bg-dark" role="progressbar" style="width: 8%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                                <span class="fw-bold small d-block f-w-4 text-end">5</span>
-                            </div>
-                            <div class="d-flex align-items-center justify-content-start mb-2">
-                                <div class="f-w-20">
-                                    <!-- Review Stars Small-->
-                                    <div class="rating position-relative d-table">
-                                        <div class="position-absolute stars" style="width: 20%">
-                                            <i class="ri-star-fill text-dark mr-1"></i>
-                                            <i class="ri-star-fill text-dark mr-1"></i>
-                                            <i class="ri-star-fill text-dark mr-1"></i>
-                                            <i class="ri-star-fill text-dark mr-1"></i>
-                                            <i class="ri-star-fill text-dark mr-1"></i>
-                                        </div>
-                                        <div class="stars">
-                                            <i class="ri-star-fill mr-1 text-muted opacity-25"></i>
-                                            <i class="ri-star-fill mr-1 text-muted opacity-25"></i>
-                                            <i class="ri-star-fill mr-1 text-muted opacity-25"></i>
-                                            <i class="ri-star-fill mr-1 text-muted opacity-25"></i>
-                                            <i class="ri-star-fill mr-1 text-muted opacity-25"></i>
-                                        </div>
-                                    </div>            </div>
-                                <div class="progress d-flex flex-grow-1 mx-4 f-h-1">
-                                    <div class="progress-bar bg-dark" role="progressbar" style="width: 5%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                                <span class="fw-bold small d-block f-w-4 text-end">1</span>
-                            </div>z
-                        </div>
-                    </div><!-- / Rewview Summary-->
-                    
-                    
-            </div>
+                <!-- Reviews -->
+<!-- Reviews Section -->
+<h3 class="fs-4 fw-bolder mt-7 mb-4">Customer Reviews ({{ reviews.count }})</h3>
 
+<!-- Reviews Display -->
+<div class="mb-4" id="review-list">
+  {% for review in reviews|slice:":3" %}
+    <div class="border p-3 mb-2 rounded bg-light review-item">
+  <div class="d-flex align-items-center gap-2 mb-2">
+    <strong class="me-2">{{ review.user.username }}</strong>
+    <div class="text-warning fs-4 d-flex">
+      {% for i in "12345" %}
+        <i class="ri-star-fill {% if forloop.counter <= review.rating %}text-warning{% else %}text-muted{% endif %}"></i>
+      {% endfor %}
+    </div>
+  </div>
+
+  {% if review.comment %}
+    <h5 class="mb-1 mt-1">{{ review.comment }}</h5>
+  {% endif %}
+  <small class="text-muted">{{ review.created_at|date:"F j, Y" }}</small>
+</div>
+
+  {% empty %}
+    <p>No reviews yet.</p>
+  {% endfor %}
+
+  {% if reviews|length > 4 %}
+    <div id="more-reviews" style="display:none;">
+      {% for review in reviews|slice:"4:" %}
+        <div class="border p-3 mb-2 rounded bg-light review-item">
+          <strong>{{ review.user.username }}</strong>
+          <div class="text-warning float-end fs-4">
+            {% for i in "12345" %}
+              <i class="ri-star-fill {% if forloop.counter <= review.rating %}text-warning{% else %}text-muted{% endif %}"></i>
+            {% endfor %}
+          </div>
+          {% if review.comment %}
+          <p class="mb-1 mt-2">{{ review.comment }}</p>
+          {% endif %}
+          <small class="text-muted">{{ review.created_at|date:"F j, Y" }}</small>
         </div>
+      {% endfor %}
+    </div>
+    <button class="btn btn-outline-dark mt-2" onclick="document.getElementById('more-reviews').style.display='block'; this.style.display='none';">View More</button>
+  {% endif %}
+</div>
+
+<!-- Submit Review Form -->
+{% if user.is_authenticated %}
+<form method="POST" class="mb-5">
+  {% csrf_token %}
+  <div class="bg-light p-4 rounded mb-4">
+
+    <div class="mb-3">
+      <label class="fw-bold mb-2 d-block">Rating:</label>
+      <div class="star-rating">
+  {% for i in "54321" %}
+    <input type="radio" name="rating" id="star{{ i }}" value="{{ i }}">
+    <label for="star{{ i }}">&#9733;</label>
+  {% endfor %}
+</div>
+    </div>
+
+    <div class="mb-3">
+      <label class="fw-bold mb-2 d-block" required>Comment:</label>
+      {{ review_form.comment|add_class:"form-control rounded p-3" }}
+    </div>
+
+    <button type="submit" class="btn btn-dark">Submit Review</button>
+  </div>
+</form>
+
+{% else %}
+  <div class="alert alert-info text-center" role="alert">
+  Please <a href="{% url 'login' %}" class="alert-link">log in</a> to leave a review.
+</div>
+{% endif %}
+
 
         <!-- /Page Content -->
     </section>
@@ -623,6 +584,32 @@
 
     <!-- Theme JS -->
     <script src="{% static 'js/theme.bundle.js' %}"></script>
+ <script>
+             document.addEventListener('DOMContentLoaded', () => {
+  const searchTrigger = document.querySelector('.search-trigger');
+  const searchForm = document.querySelector('.search-form');
+  const searchInput = document.querySelector('.search-input');
+
+  // Toggle search form on click
+  searchTrigger?.addEventListener('click', () => {
+    searchForm.classList.toggle('active');
+
+    // If now active, focus the input
+    if (searchForm.classList.contains('active')) {
+      searchInput.focus();
+    } else {
+      // If collapsed, clear input
+      searchInput.value = '';
+    }
+  });
+
+  // Collapse search after form submission
+  searchForm?.addEventListener('submit', () => {
+    searchForm.classList.remove('active');
+    searchInput.value = '';
+  });
+});
+    </script>
 </body>
 
 </html>

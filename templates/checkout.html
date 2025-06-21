@@ -6,7 +6,7 @@
   <meta charset="utf-8">
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Checkout | OldSkool</title>
+  <title>Wabi Clothing | Checkout </title>
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.gstatic.com">
@@ -14,6 +14,8 @@
 
   <!-- Favicon -->
   <link rel="icon" href="{% static 'images/favicon/favicon-32x32.png' %}" type="image/png">
+  <link rel="icon" href="{% static 'images/favicon/favicon.ico' %}" type="image/x-icon">
+
 
   <!-- CSS -->
   <link rel="stylesheet" href="{% static 'css/libs.bundle.css' %}" />
@@ -29,14 +31,14 @@
 </head>
 
 <body>
-  <section class="py-5">
+  <section class="py-1">
     <div class="container">
       <div class="row">
 
         <!-- Checkout Form -->
         <div class="col-lg-7">
           <a class="navbar-brand fw-bold fs-3 mb-4 d-inline-block" href="{% url 'index' %}">
-            <img src="{% static 'images/logos/wabi-logo.png' %}" alt="Logo" height="40">
+            <img src="{% static 'images/logos/wabi-logo.png' %}" alt="Logo" class="f-w-7" style="height: 40px;">
           </a>
 
           <ul class="list-inline small fw-bold mb-4">
@@ -46,7 +48,6 @@
 
           <div class="border-bottom mb-4 pb-3 d-flex justify-content-between align-items-center">
             <h3 class="fs-5 fw-bold">Contact Information</h3>
-            <small>Already registered? <a href="{% url 'login' %}">Login</a></small>
           </div>
 
           <!-- FORM START -->
@@ -67,11 +68,15 @@
     </div>
     <div class="col-12 mb-3">
       <label for="phone" class="form-label">Phone Number</label>
-      <input type="number" name="phone" class="form-control" id="phone" value="{{ user.customer.phone }}" required >
+      <input type="number" name="phone" class="form-control" id="phone"  required >
     </div>
     <div class="col-12 mb-3">
       <label for="address" class="form-label">Address</label>
       <input type="text" name="address" class="form-control" id="address" required>
+    </div>
+    <div class="col-md-6 mb-3">
+      <label for="city" class="form-label">City</label>
+      <input type="text" name="city" class="form-control" id="city" required>
     </div>
     <div class="col-md-6 mb-3">
       <label for="state" class="form-label">State</label>
@@ -123,11 +128,11 @@
             </div>
             <div class="d-flex justify-content-between mb-2">
               <span class="fw-bold">Shipping</span>
-              <span id="shipping">₹50.00</span>
+              <span id="shipping">₹99.00</span>
             </div>
             <div class="d-flex justify-content-between border-top pt-2 mt-3">
               <span class="fs-5 fw-bold">Total</span>
-              <span class="fs-5 fw-bold" id="grand-total">₹{{ order.get_cart_total|add:50|floatformat:2 }}</span>
+              <span class="fs-5 fw-bold" id="grand-total">₹{{ order.get_cart_total|add:99|floatformat:2 }}</span>
             </div>
 
             <div class="mt-3">
@@ -142,6 +147,25 @@
       </div>
     </div>
   </section>
+  <footer class="border-top py-5 mt-4  ">
+        <div class="container-fluid">
+            <div class="d-flex justify-content-between align-items-center flex-column flex-lg-row">
+                <div>
+                    <ul class="list-unstyled">
+                        <li class="d-inline-block me-1"><a class="text-decoration-none text-dark-hover transition-all"
+                                href="https://www.instagram.com/wabi.clothing?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw=="><i class="ri-instagram-fill"></i></a></li>
+                        <li class="d-inline-block me-1"><a class="text-decoration-none text-dark-hover transition-all"
+                                href="#"><i class="ri-facebook-fill"></i></a></li>
+                        <li class="d-inline-block me-1"><a class="text-decoration-none text-dark-hover transition-all"
+                                href="#"><i class="ri-twitter-fill"></i></a></li>
+                    </ul>
+                </div>
+                <div class="d-flex align-items-center justify-content-end flex-column flex-lg-row">
+                    <p class="small m-0 text-center text-lg-start">&copy; 2025 WABI All Rights Reserved. UPM Technologies</a></p>
+                </div>
+            </div>
+        </div>
+    </footer> 
 
   <!-- Scripts -->
   <script src="{% static 'js/vendor.bundle.js' %}"></script>
@@ -153,11 +177,12 @@
       const form = e.target;
 
       const data = {
-        name: form.first_name.value + " " + form.last_name.value,
+        first_name: form.first_name.value,
+        last_name: form.last_name.value,
         email: form.email.value,
         phone: form.phone.value, 
         address: form.address.value,
-        city: "N/A",
+        city: form.city.value,
         state: form.state.value,
         zip: form.zip.value,
       };

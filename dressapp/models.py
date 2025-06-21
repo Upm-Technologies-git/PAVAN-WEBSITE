@@ -20,14 +20,7 @@ class Customer(models.Model):
     def __str__(self):
         return self.user.username 
 
-class Category(models.Model):
-    name = models.CharField(max_length=200, null=True)
-    price = models.FloatField()
-    digital = models.BooleanField(default=False, null=True, blank=False)
-    image = models.ImageField(null=True, blank=True, upload_to=getFileName)
 
-    def __str__(self):
-        return f'Category {self.name}'
 
     @property
     def imageURL(self):
@@ -41,7 +34,7 @@ class Product(models.Model):
     is_featured = models.BooleanField(default=False)  # Add this line
     tagline = models.CharField(max_length=200, null=True, blank=True)
     description = models.TextField(blank=True, null=True)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products',null=True,blank=True)
+    category = models.CharField(max_length=100 ,blank=True, null=True)
 
     def __str__(self):
         return f'Product {self.name}'
@@ -73,18 +66,22 @@ class Order(models.Model):
     transaction_id = models.CharField(max_length=200, null=True, blank=True)
     date_ordered = models.DateTimeField(auto_now_add=True)
     complete = models.BooleanField(default=False, null=True, blank=False)
+    shipping_charge = models.DecimalField(max_digits=10, decimal_places=2, default=99)
 
     def __str__(self):
         return f"Order {self.id}"
 
     @property
     def get_total(self):
-        return self.product.price * self.quantity
+        return self.product.price * self.quantity 
 
     @property
     def get_cart_total(self):
         return sum(item.get_total() for item in self.orderitem_set.all())
-
+    
+    def get_cart_items(self):
+        return sum([item.quantity for item in self.orderitem_set.all()])
+    
     def save(self, *args, **kwargs):
         if not self.order_number:
             self.order_number = f"ORD-{now().strftime('%Y%m%d')}-{uuid.uuid4().hex[:6].upper()}"
@@ -106,15 +103,18 @@ class OrderItem(models.Model):
 class ShippingAddress(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, blank=True, null=True)
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name="shipping_addresses", default=0)
+    first_name = models.CharField(max_length=100, null=True)
+    last_name = models.CharField(max_length=100, null=True) 
     address = models.CharField(max_length=200, null=True)
     city = models.CharField(max_length=200, null=True)
     state = models.CharField(max_length=200, null=True)
-    phone = models.CharField(max_length=15, blank=True, null=True)
+    phone = models.CharField(max_length=15, null=True)
     zipcode = models.CharField(max_length=200, null=True)
     date_added = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.address if self.address else "No Address"
+        return f"{self.first_name} {self.last_name}" if self.first_name else "No Name"
+
 
 class Newsletter(models.Model):
     username = models.CharField(max_length=100, null=True)
@@ -169,3 +169,13 @@ class InstagramImage(models.Model):
 
     def __str__(self):
         return self.alt_text or f"Instagram Image {self.id}"
+    
+class Review(models.Model):
+    product = models.ForeignKey('Product', on_delete=models.CASCADE, related_name='reviews')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    rating = models.IntegerField(choices=[(i, i) for i in range(1, 6)])  # 1 to 5
+    comment = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.product.name} ({self.rating}⭐)"
