@@ -379,7 +379,7 @@ def search_results(request):
         return redirect('index')
 
     elif len(matched_products) == 1:
-        return redirect('product', product_id=matched_products[0].id)
+        return redirect('product', pk=matched_products[0].id)
 
     else:
         # Store matched product IDs and query in session for use in category view

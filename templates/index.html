@@ -112,8 +112,8 @@
         </a>
 
         <!-- Center Title -->
-        <div class="position-absolute start-50 translate-middle-x">
-          <span class="fw-bold fs-4 text-dark">WABI</span>
+        <div class="position-center ">
+          <a class=" lead fw-bold fs-2 text-dark w-medium px-3 text-decoration-none" href="{% url 'index' %}"><span >WABI CLOTHING</span></a>
         </div>
 
         <!-- Toggle Right -->
@@ -127,9 +127,6 @@
       <!-- Collapsible Menu -->
       <div class="collapse navbar-collapse mt-2 mt-lg-0 w-100" id="mainNavbar">
         <ul class="navbar-nav mx-auto mb-2 mb-lg-0 text-center gap-2 w-100 justify-content-center">
-          <li class="nav-item">
-            <a class="nav-link fw-medium px-3" href="{% url 'index' %}">Home</a>
-          </li>
           <li class="nav-item">
             <a class="nav-link fw-medium px-3" href="{% url 'category' %}">Category</a>
           </li>
@@ -153,7 +150,7 @@
             </span>
 
             <form method="get" action="{% url 'search_redirect' %}" class="search-form d-flex align-items-center ms-2">
-              <input type="text" name="q" class="form-control search-input" placeholder="Search..." />
+              <input type="text" name="q" class="form-control search-input" placeholder="Search..." required/>
               <button type="submit" class="btn btn-dark btn-sm ms-2">Go</button>
             </form>
           </li>
@@ -273,6 +270,7 @@
                           "prevEl": ".swiper-prev"
                         }
                       }'>
+<h2 calss=" p-6">Category</h2>
                       <div class="swiper-wrapper">
   {% for cat in featured_categories %}
   <div class="swiper-slide align-self-stretch bg-transparent h-auto">
@@ -327,13 +325,13 @@
                 </div>
             </div>
             <!-- / Homepage Intro-->
-
             <!-- Homepage Banners-->
-<div class="pt-7 mb-5 mb-lg-10">
+<h1>Best Selling</h1>
+<div class="pt-2 mb-5 mb-lg-10">
   <div class="row g-4">
     {% for product in featured_products %}
     <div class="col-12 col-md-6 col-xl-3 d-flex" data-aos="fade-up">
-      <a href="{% url 'product' product.id %}" class="card position-relative overflow-hidden text-decoration-none w-100">
+      <a href="{% url 'product' pk=product.id %}" class="card position-relative overflow-hidden text-decoration-none w-100">
         <picture class="position-relative z-index-10 d-block bg-light">
           <img class="w-100 rounded" src="{{ product.image.url }}" alt="{{ product.name }}">
         </picture>
@@ -452,7 +450,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     searchForm.addEventListener('submit', () => {
       searchForm.classList.remove('active');
-      searchInput.value = '';
     });
   }
 

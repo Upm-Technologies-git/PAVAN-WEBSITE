@@ -141,8 +141,8 @@
         </a>
 
         <!-- Center Title -->
-        <div class="position-absolute start-50 translate-middle-x">
-          <span class="fw-bold fs-4 text-dark">WABI</span>
+        <div class="position-center ">
+          <a class=" lead fw-bold fs-2 text-dark w-medium px-3 text-decoration-none" href="{% url 'index' %}"><span >WABI CLOTHING</span></a>
         </div>
 
         <!-- Toggle Right -->
@@ -156,9 +156,6 @@
       <!-- Collapsible Menu -->
       <div class="collapse navbar-collapse mt-2 mt-lg-0 w-100" id="mainNavbar">
         <ul class="navbar-nav mx-auto mb-2 mb-lg-0 text-center gap-2 w-100 justify-content-center">
-          <li class="nav-item">
-            <a class="nav-link fw-medium px-3" href="{% url 'index' %}">Home</a>
-          </li>
           <li class="nav-item">
             <a class="nav-link fw-medium px-3" href="{% url 'category' %}">Category</a>
           </li>
@@ -207,7 +204,7 @@
         
         <!-- Category Top Banner -->
         <div class="py-10 bg-img-cover bg-overlay-dark position-relative overflow-hidden bg-pos-center-center rounded-0"
-     style="background-image: url('{% static "images/banners/wabi-1.jpg" %}');">
+     style="background-image: url('{% static "images/banners/banner-2.jpg" %}');">
   <div class="container-fluid position-relative z-index-20" data-aos="fade-right" data-aos-delay="300">
     <h1 class="fw-bold display-6 mb-4 text-white">A new piece with purpose</h1>
     <div class="col-12 col-md-6">
@@ -251,7 +248,7 @@
 
         <!-- FIXED IMAGE BLOCK -->
         <div class="ratio ratio-1x1 bg-light" >
-          <a href="{% url 'product' product.id %}">
+          <a href="{% url 'product' pk=product.id %}">
             <img src="{{ product.imageURL }}" 
                alt="{{ product.name }}" 
                title="{{ product.name }}"
@@ -261,7 +258,7 @@
 
       </div>
       <div class="card-body px-2 text-center">
-        <a class="text-decoration-none fw-bold d-block" href="{% url 'product' product.id %}">{{ product.name }}</a>
+        <a class="text-decoration-none fw-bold d-block" href="{% url 'product' pk=product.id %}">{{ product.name }}</a>
         {% if product.tagline %}
   <strong class="text-muted d-block text-center">{{ product.tagline }}</strong>
 {% endif %}

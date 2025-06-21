@@ -139,8 +139,8 @@
         </a>
 
         <!-- Center Title -->
-        <div class="position-absolute start-50 translate-middle-x">
-          <span class="fw-bold fs-4 text-dark">WABI</span>
+        <div class="position-center ">
+          <a class=" lead fw-bold fs-2 text-dark w-medium px-3 text-decoration-none " href="{% url 'index' %}"><span >WABI CLOTHING</span></a>
         </div>
 
         <!-- Toggle Right -->
@@ -154,9 +154,6 @@
       <!-- Collapsible Menu -->
       <div class="collapse navbar-collapse mt-2 mt-lg-0 w-100" id="mainNavbar">
         <ul class="navbar-nav mx-auto mb-2 mb-lg-0 text-center gap-2 w-100 justify-content-center">
-          <li class="nav-item">
-            <a class="nav-link fw-medium px-3" href="{% url 'index' %}">Home</a>
-          </li>
           <li class="nav-item">
             <a class="nav-link fw-medium px-3" href="{% url 'category' %}">Category</a>
           </li>
@@ -455,7 +452,7 @@
           </picture>
         </div>
         <div class="card-body px-0">
-          <a class="text-decoration-none link-cover fw-bold d-block text-center mt-2" href="{% url 'product' product.id %}">
+          <a class="text-decoration-none link-cover fw-bold d-block text-center mt-2" href="{% url 'product' pk=product.id %}">
             {{ product.name }}
           </a>
         </div>
