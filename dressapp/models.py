@@ -39,6 +39,7 @@ class Product(models.Model):
     digital = models.BooleanField(default=False, null=True, blank=False)
     image = models.ImageField(null=True, blank=True, upload_to=getFileName)  # Primary display image
     is_featured = models.BooleanField(default=False)  # Add this line
+    tagline = models.CharField(max_length=200, null=True, blank=True)
     description = models.TextField(blank=True, null=True)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, related_name='products',null=True,blank=True)
 
