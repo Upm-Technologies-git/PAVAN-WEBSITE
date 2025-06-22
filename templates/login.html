@@ -65,7 +65,15 @@
     <img src={% static 'images/logos/wabi-logo.png' %} alt="Logo" class="f-w-7" style="height: 40px;">
   </div>
 </a>
-
+ {% if messages %}
+  <div id="message-container">
+    {% for message in messages %}
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
             <!-- / Logo-->
             <div class="shadow-xl p-4 p-lg-5 bg-white">
                 <h1 class="text-center fw-bold mb-5 fs-2">Login</h1>
@@ -106,6 +114,19 @@
     
     <!-- Theme JS -->
     <script src="{% static 'js/theme.bundle.js' %}"></script>
+    <script>
+  // Wait for DOM to load
+  document.addEventListener("DOMContentLoaded", function () {
+    const messageContainer = document.getElementById("message-container");
+    if (messageContainer) {
+      setTimeout(() => {
+        messageContainer.style.transition = "opacity 0.5s ease-out";
+        messageContainer.style.opacity = 0;
+        setTimeout(() => messageContainer.remove(), 500); // Fully remove after fade
+      }, 2000); // 2 seconds
+    }
+  });
+</script>
 </body>
 
 </html>

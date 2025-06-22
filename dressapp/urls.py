@@ -25,4 +25,6 @@ urlpatterns = [
     path('order/success/<str:order_number>/', views.order_success, name='order_success'),
     path('search-product/', views.search_results, name='search_redirect'),
     path('search-category/', views.category_from_search, name='category_from_search'),
+    path('order-history/', views.order_history, name='order_history'),
+    path('cancel-order/<int:order_id>/', views.cancel_order, name='cancel_order'),
 ]

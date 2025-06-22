@@ -66,7 +66,7 @@ class Order(models.Model):
     transaction_id = models.CharField(max_length=200, null=True, blank=True)
     date_ordered = models.DateTimeField(auto_now_add=True)
     complete = models.BooleanField(default=False, null=True, blank=False)
-    shipping_charge = models.DecimalField(max_digits=10, decimal_places=2, default=99)
+    shipping_charge = models.FloatField(default=99.00)
 
     def __str__(self):
         return f"Order {self.id}"
@@ -77,7 +77,8 @@ class Order(models.Model):
 
     @property
     def get_cart_total(self):
-        return sum(item.get_total() for item in self.orderitem_set.all())
+        items_total = sum(item.get_total() for item in self.orderitem_set.all())
+        return items_total 
     
     def get_cart_items(self):
         return sum([item.quantity for item in self.orderitem_set.all()])

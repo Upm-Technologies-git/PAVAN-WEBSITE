@@ -124,7 +124,7 @@
 
             <div class="d-flex justify-content-between mb-2">
               <span class="fw-bold">Subtotal</span>
-              <span id="subtotal">₹{{ order.get_cart_total|floatformat:2 }}</span>
+              <span id="subtotal">₹{{ order.get_cart_total |floatformat:2 }}</span>
             </div>
             <div class="d-flex justify-content-between mb-2">
               <span class="fw-bold">Shipping</span>
@@ -132,7 +132,7 @@
             </div>
             <div class="d-flex justify-content-between border-top pt-2 mt-3">
               <span class="fs-5 fw-bold">Total</span>
-              <span class="fs-5 fw-bold" id="grand-total">₹{{ order.get_cart_total|add:99|floatformat:2 }}</span>
+              <span class="fs-5 fw-bold" id="grand-total">₹{{ order.get_cart_total|add:"99"|floatformat:2 }}</span>
             </div>
 
             <div class="mt-3">

@@ -46,13 +46,18 @@ def login(request):
             messages.error(request, "Please enter both email and password.")
             return redirect("login")
 
-        user = authenticate(request, username=email, password=password)
-        if user is not None:
-            auth_login(request, user)
-            return redirect("index")
-        else:
-            messages.error(request, "Invalid email or password.")
-            return redirect("login")
+        try:
+            user_obj = User.objects.get(email=email)
+            user = authenticate(request, username=user_obj.username, password=password)
+            if user is not None:
+                auth_login(request, user)
+                return redirect("index")
+            else:
+                messages.error(request, "Invalid email or password.")
+        except User.DoesNotExist:
+            messages.error(request, "Email not registered.")
+
+        return redirect("login")
 
     return render(request, "login.html")
 
@@ -275,12 +280,12 @@ def order_success(request, order_number):
     return render(request, 'success.html', {'order': order})
 
 # Profile Update
-@never_cache
 @login_required
+@never_cache
 def profile(request):
-    if not request.user.is_authenticated:
-        return redirect('index')
-    
+    customer = request.user.customer
+    orders = Order.objects.filter(customer=customer).order_by('-date_ordered')
+
     if request.method == 'POST':
         first_name = request.POST.get('first_name')
         last_name = request.POST.get('last_name')
@@ -291,13 +296,12 @@ def profile(request):
         user.last_name = last_name
         user.save()
 
-        customer, created = Customer.objects.get_or_create(user=user)
         customer.phone = phone
         customer.save()
 
         messages.success(request, "Profile updated successfully!")
 
-    return render(request, 'profile.html')
+    return render(request, 'profile.html', {"orders": orders})
 
 # Quantity Update via AJAX
 @csrf_exempt
@@ -402,3 +406,19 @@ def category_from_search(request):
         'search_query': query,
         'filtered': True
     })
+
+@login_required
+def order_history(request):
+    orders = Order.objects.filter(customer=request.user).order_by('-order_date')
+    return render(request, 'order_history.html', {'orders': orders})
+
+@login_required
+def cancel_order(request, order_id):
+    order = get_object_or_404(Order, id=order_id, customer=request.user.customer)
+
+    if order.status != "Cancelled":
+        order.status = "Cancelled"
+        order.save()
+        messages.success(request, f"Order #{order.order_number} has been cancelled.")
+
+    return redirect('profile') 

@@ -125,7 +125,7 @@
 </head>
 <body class="">
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-light bg-white border-0 shadow-sm PY-1">
+<nav class="navbar navbar-expand-lg navbar-light bg-white border-0 shadow-sm py-2">
   <div class="container-fluid">
 
     <!-- Logo + Toggle + Collapse all grouped -->
@@ -140,7 +140,7 @@
 
         <!-- Center Title -->
         <div class="position-center ">
-          <a class=" lead fw-bold fs-2 text-dark w-medium px-3 text-decoration-none " href="{% url 'index' %}"><span >WABI CLOTHING</span></a>
+          <a class=" lead fw-bold fs-2 text-dark w-medium px-3 text-decoration-none" href="{% url 'index' %}"><span >WABI CLOTHING</span></a>
         </div>
 
         <!-- Toggle Right -->
@@ -177,7 +177,7 @@
             </span>
 
             <form method="get" action="{% url 'search_redirect' %}" class="search-form d-flex align-items-center ms-2">
-              <input type="text" name="q" class="form-control search-input" placeholder="Search..." />
+              <input type="text" name="q" class="form-control search-input" placeholder="Search..." required/>
               <button type="submit" class="btn btn-dark btn-sm ms-2">Go</button>
             </form>
           </li>
@@ -582,31 +582,39 @@
     <!-- Theme JS -->
     <script src="{% static 'js/theme.bundle.js' %}"></script>
  <script>
-             document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
+  // --- SEARCH TOGGLE ---
   const searchTrigger = document.querySelector('.search-trigger');
   const searchForm = document.querySelector('.search-form');
   const searchInput = document.querySelector('.search-input');
 
-  // Toggle search form on click
-  searchTrigger?.addEventListener('click', () => {
-    searchForm.classList.toggle('active');
+  if (searchTrigger && searchForm && searchInput) {
+    searchTrigger.addEventListener('click', () => {
+      searchForm.classList.toggle('active');
 
-    // If now active, focus the input
-    if (searchForm.classList.contains('active')) {
-      searchInput.focus();
-    } else {
-      // If collapsed, clear input
-      searchInput.value = '';
-    }
-  });
+      if (searchForm.classList.contains('active')) {
+        searchInput.focus();
+      } else {
+        searchInput.value = '';
+      }
+    });
 
-  // Collapse search after form submission
-  searchForm?.addEventListener('submit', () => {
-    searchForm.classList.remove('active');
-    searchInput.value = '';
+    searchForm.addEventListener('submit', () => {
+      searchForm.classList.remove('active');
+    });
+  }
+
+  // --- AUTO DISMISS ALERTS AFTER 2 SECONDS ---
+  const alerts = document.querySelectorAll('.auto-dismiss');
+
+  alerts.forEach(alert => {
+    setTimeout(() => {
+      alert.classList.remove('show'); // Bootstrap fade out
+      setTimeout(() => alert.remove(), 500); // Remove from DOM
+    }, 1000); // 2-second delay
   });
 });
-    </script>
+</script>
 </body>
 
 </html>
