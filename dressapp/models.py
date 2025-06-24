@@ -73,7 +73,9 @@ class Order(models.Model):
 
     @property
     def get_total(self):
-        return self.product.price * self.quantity 
+        if self.product and self.product.price:
+            return self.product.price * self.quantity
+        return 0 
 
     @property
     def get_cart_total(self):
@@ -96,10 +98,14 @@ class OrderItem(models.Model):
     date_added = models.DateTimeField(auto_now_add=True)
 
     def get_total(self):
-        return self.product.price * self.quantity
+        if self.product and self.product.price:
+            return self.product.price * self.quantity
+        return 0
 
     def __str__(self):
-        return f"{self.product.name} x {self.quantity} ({self.size})"
+        product_name = self.product.name if self.product else "Deleted Product"
+        return f"{product_name} x {self.quantity} ({self.size})"
+
 
 class ShippingAddress(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, blank=True, null=True)
@@ -180,3 +186,21 @@ class Review(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.product.name} ({self.rating}⭐)"
+
+class SizeOption(models.Model):
+    code = models.CharField(max_length=5, unique=True)
+
+    def __str__(self):
+        return self.code
+
+class ProductSize(models.Model):
+    product = models.ForeignKey(Product, related_name='sizes', on_delete=models.CASCADE)
+    size = models.ForeignKey(SizeOption, on_delete=models.CASCADE)
+    is_available = models.BooleanField(default=True)
+
+    class Meta:
+        unique_together = ('product', 'size')
+
+    def __str__(self):
+        return f"{self.product.name} - {self.size.code}"
+    

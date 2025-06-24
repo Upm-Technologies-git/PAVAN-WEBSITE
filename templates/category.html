@@ -16,6 +16,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600&family=Roboto:wght@300;400;700&display=auto"
     rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
 
   <!-- Favicon -->
   <link rel="apple-touch-icon" sizes="180x180" href="{% static 'images/favicon/apple-touch-icon.png' %}">
@@ -93,7 +94,14 @@
 .search-form .btn i {
   font-size: 16px;
 }
-
+.fixed-square-img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    max-width: 4330px;
+    max-height: 4330px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
   </style>
   <!-- Page Title -->
   <title>Wabi Clothing | Category</title>
@@ -141,9 +149,19 @@
         </a>
 
         <!-- Center Title -->
-        <div class="position-center ">
-          <a class=" lead fw-bold fs-2 text-dark w-medium px-3 text-decoration-none" href="{% url 'index' %}"><span >WABI CLOTHING</span></a>
-        </div>
+        <div class="d-flex justify-content-end w-100 text-center py-2 px-4 ">
+  <a class="fw-bold text-dark text-decoration-none"
+     href="{% url 'index' %}"
+     style="
+       font-family: 'Orbitron', sans-serif;
+       letter-spacing: 2px;
+       font-size: clamp(1.2rem, 5vw, 2rem); 
+       word-break: break-word;
+     ">
+    <span>WABI CLOTHING</span>
+  </a>
+</div>
+
 
         <!-- Toggle Right -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
@@ -175,15 +193,15 @@
           <!-- Search (desktop only) -->
           <li class="nav-item d-none d-sm-flex align-items-center position-relative">
             <!-- Trigger -->
-<span class="nav-link text-body cursor-pointer px-3 fw-medium search-trigger">
-  <i class="ri-search-line align-middle me-1"></i>Search
-</span>
+      <span class="nav-link text-body cursor-pointer px-3 fw-medium search-trigger">
+        <i class="ri-search-line align-middle me-1"></i>Search
+      </span>
 
-<!-- Form -->
-<form method="get" action="{% url 'search_redirect' %}" class="search-form d-flex align-items-center ms-2">
-  <input type="text" name="q" class="form-control search-input" placeholder="Search..." required/>
-  <button type="submit" class="btn btn-dark btn-sm ms-2">Go</button>
-</form>
+      <!-- Form -->
+      <form method="get" action="{% url 'search_redirect' %}" class="search-form d-flex align-items-center ms-2">
+        <input type="text" name="q" class="form-control search-input" placeholder="Search..." required/>
+        <button type="submit" class="btn btn-dark btn-sm ms-2">Go</button>
+      </form>
 
           </li>
 
@@ -255,7 +273,7 @@
             <img src="{{ product.imageURL }}" 
                alt="{{ product.name }}" 
                title="{{ product.name }}"
-               class="img-fluid w-100 h-100 object-fit-cover">
+               class="fixed-square-img img-fluid w-100 h-100 object-fit-cover">
           </a>
         </div>
 

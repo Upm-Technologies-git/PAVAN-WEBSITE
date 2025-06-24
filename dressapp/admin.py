@@ -1,8 +1,9 @@
 from django.contrib import admin
 from django.utils.html import format_html
+from .forms import ProductAdminForm
 from .models import (
     Customer, Product, Order, OrderItem, ShippingAddress,
-    Newsletter, ContactUs,Banner,FeaturedCategory,InstagramImage,ProductImage,Review
+    Newsletter, ContactUs,Banner,FeaturedCategory,InstagramImage,ProductImage,Review,ProductSize,SizeOption
 )
 
 # Inline for order items inside the order detail page
@@ -47,6 +48,10 @@ class OrderAdmin(admin.ModelAdmin):
         return obj.get_cart_items()  
     get_cart_items.short_description = 'Total Items'
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.filter(complete=True)
+
 @admin.register(OrderItem)
 class OrderItemAdmin(admin.ModelAdmin):
     list_display = ['product', 'order', 'quantity', 'get_total']
@@ -64,7 +69,7 @@ class CustomerAdmin(admin.ModelAdmin):
 
 class ProductImageInline(admin.TabularInline):
     model = ProductImage
-    extra = 3  # You can set to 5 or more
+    extra = 3
     readonly_fields = ['preview']
 
     def preview(self, obj):
@@ -75,17 +80,32 @@ class ProductImageInline(admin.TabularInline):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
+    form = ProductAdminForm
     list_display = ['name', 'price', 'digital', 'image_tag']
     search_fields = ['name']
     readonly_fields = ['image_tag']
     inlines = [ProductImageInline]
+
     def image_tag(self, obj):
         if obj.image:
             return format_html('<img src="{}" width="50" />', obj.image.url)
         return "-"
     image_tag.short_description = 'Main Image'
 
+    def save_model(self, request, obj, form, change):
+        super().save_model(request, obj, form, change)
 
+        selected_sizes = form.cleaned_data.get('new_sizes')
+        if selected_sizes is None:
+            selected_sizes = SizeOption.objects.none()
+
+        for size in SizeOption.objects.all():
+            ps_obj, created = ProductSize.objects.get_or_create(product=obj, size=size)
+            if size in selected_sizes:
+                ps_obj.is_available = True
+            else:
+                ps_obj.is_available = False
+            ps_obj.save()
 
 @admin.register(Newsletter)
 class NewsletterAdmin(admin.ModelAdmin):
@@ -120,3 +140,7 @@ class ReviewAdmin(admin.ModelAdmin):
     list_display = ('user', 'product', 'rating', 'comment', 'created_at')
     list_filter = ('rating', 'created_at')
     search_fields = ('user__username', 'product__name', 'comment')
+
+@admin.register(SizeOption)
+class SizeOptionAdmin(admin.ModelAdmin):
+    list_display = ['code']

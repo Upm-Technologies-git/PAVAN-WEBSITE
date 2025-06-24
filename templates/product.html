@@ -26,6 +26,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicon/favicon-16x16.png' %}">
   <link rel="mask-icon" href="{% static 'images/favicon/safari-pinned-tab.svg' %}" color="#5bbad5">
   <link rel="icon" href="{% static 'images/favicon/favicon.ico' %}" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
 
   <meta name="msapplication-TileColor" content="#da532c">
   <meta name="theme-color" content="#ffffff">
@@ -121,6 +122,14 @@
 .search-form .btn i {
   font-size: 16px;
 }
+.fixed-square-img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    max-width: 4330px;
+    max-height: 4330px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
     </style>
 </head>
 <body class="">
@@ -139,9 +148,20 @@
         </a>
 
         <!-- Center Title -->
-        <div class="position-center ">
-          <a class=" lead fw-bold fs-2 text-dark w-medium px-3 text-decoration-none" href="{% url 'index' %}"><span >WABI CLOTHING</span></a>
-        </div>
+        <div class="d-flex justify-content-end w-100 text-center py-2 px-4 ">
+  <a class="fw-bold text-dark text-decoration-none"
+     href="{% url 'index' %}"
+     style="
+       font-family: 'Orbitron', sans-serif;
+       letter-spacing: 2px;
+       font-size: clamp(1.2rem, 5vw, 2rem); 
+       word-break: break-word;
+     ">
+    <span>WABI CLOTHING</span>
+  </a>
+</div>
+
+
 
         <!-- Toggle Right -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
@@ -227,13 +247,13 @@
       <div class="carousel-inner">
   {% if product.image %}
     <div class="carousel-item active">
-      <img src="{{ product.image.url }}" class="d-block w-100 img-fluid" alt="{{ product.name }}">
+      <img src="{{ product.image.url }}" class="fixed-square-img d-block w-100 img-fluid" alt="{{ product.name }}">
     </div>
   {% endif %}
 
   {% for img in product.images.all %}
     <div class="carousel-item {% if not product.image and forloop.first %}active{% endif %}">
-      <img src="{{ img.image.url }}" class="d-block w-100 img-fluid" alt="{{ product.name }} - Extra Image">
+      <img src="{{ img.image.url }}" class="fixed-square-img d-block w-100 img-fluid" alt="{{ product.name }} - Extra Image">
     </div>
   {% endfor %}
 </div>
@@ -284,38 +304,39 @@
                                 <p class="fs-4 m-0"> ₹{{product.price}}</p>
                             </div>
                             
-                            <form method="post" action="{% url 'add_to_cart' product.id %}">
+                           <form method="post" action="{% url 'add_to_cart' product.id %}">
   {% csrf_token %}
 
   <div class="border-top mt-4 mb-3 product-option">
     <small class="text-uppercase pt-4 d-block fw-bolder">
       <span class="text-muted">Available Sizes (Mens)</span> :
-      <span class="selected-option fw-bold" data-pixr-product-option="size">M</span>
     </small>
 
-    <div class="mt-4 d-flex justify-content-start flex-wrap align-items-start">
-      {% for size in sizes %}
-      <div class="form-check-option form-check-rounded">
-        <input
-          type="radio"
-          name="size"
-          value="{{ size }}"
-          id="option-size-{{ forloop.counter0 }}"
-          {% if size == "M" %} checked {% endif %}
-          required>
-        <label for="option-size-{{ forloop.counter0 }}">
-          <small>{{ size }}</small>
-        </label>
-      </div>
-      {% endfor %}
-    </div>
+    <div class="d-flex flex-wrap mt-3">
+ {% for size in sizes %}
+  <div class="form-check-option form-check-rounded me-2 mb-2">
+    <input
+      type="radio"
+      name="size"
+      value="{{ size.code }}"
+      id="option-size-{{ forloop.counter0 }}"
+      {% if not size.is_available %}disabled{% endif %}
+      {% if size.code == 'M' and size.is_available %}checked{% endif %}
+      required>
+    <label for="option-size-{{ forloop.counter0 }}"
+           class="{% if not size.is_available %}text-muted text-decoration-line-through{% endif %}">
+      <small>{{ size.code }}</small>
+    </label>
+  </div>
+{% endfor %}
+</div>
   </div>
 
-
-<button type="submit" class="btn btn-dark w-100 mt-4 mb-0 hover-lift-sm hover-boxshadow">
-  Add To Shopping Bag
-</button>
+  <button type="submit" class="btn btn-dark w-100 mt-4 mb-0 hover-lift-sm hover-boxshadow">
+    Add To Shopping Bag
+  </button>
 </form>
+
                         
                             <!-- Product Highlights-->
                                 <div class="my-5">

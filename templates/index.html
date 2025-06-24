@@ -24,6 +24,7 @@
   <link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicon/favicon-16x16.png' %}">
   <link rel="mask-icon" href="{% static 'images/favicon/safari-pinned-tab.svg' %}" color="#5bbad5">
   <link rel="icon" href="{% static 'images/favicon/favicon.ico' %}" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap" rel="stylesheet">
 
   <meta name="msapplication-TileColor" content="#da532c">
   <meta name="theme-color" content="#ffffff">
@@ -92,7 +93,38 @@
   font-size: 16px;
 }
 
+/* Mobile-only horizontal scroll */
+@media (max-width: 768px) {
+  .best-selling-slider {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .best-selling-slider .row {
+    flex-wrap: nowrap !important;
+  }
+
+  .best-selling-slider .col-10 {
+    flex: 0 0 auto;
+    width: 80%; /* Show one product at a time */
+    scroll-snap-align: start;
+  }
+
+  .best-selling-slider::-webkit-scrollbar {
+    display: none;
+  }
+}
+.fixed-square-img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    max-width: 4330px;
+    max-height: 4330px;
+    object-fit: cover;
+    border-radius: 8px;
+  }
   </style>
+  
   <!-- Page Title -->
   <title>Wabi Clothing</title>
 
@@ -112,9 +144,19 @@
         </a>
 
         <!-- Center Title -->
-        <div class="position-center ">
-          <a class=" lead fw-bold fs-2 text-dark w-medium px-3 text-decoration-none" href="{% url 'index' %}"><span >WABI CLOTHING</span></a>
-        </div>
+ <div class="d-flex justify-content-end w-100 text-center py-2 px-4">
+  <a class="fw-bold text-dark text-decoration-none"
+     href="{% url 'index' %}"
+     style="
+       font-family: 'Orbitron', sans-serif;
+       letter-spacing: 2px;
+       font-size: clamp(1.2rem, 5vw, 2rem); 
+       word-break: break-word;
+     ">
+    <span>WABI CLOTHING</span>
+  </a>
+</div>
+
 
         <!-- Toggle Right -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
@@ -286,9 +328,18 @@
   {% endfor %}
 </div>
                     
-                      <div class="swiper-btn swiper-prev swiper-disabled-hide swiper-btn-side btn-icon bg-white text-dark ms-3 shadow mt-n5"><i class="ri-arrow-left-s-line "></i></div>
-                      <div class="swiper-btn swiper-next swiper-disabled-hide swiper-btn-side swiper-btn-side-right btn-icon bg-white text-dark me-3 shadow mt-n5"><i class="ri-arrow-right-s-line ri-lg"></i></div>
-                    
+                      <!-- Swiper Prev Button -->
+<div class="swiper-btn swiper-prev swiper-disabled-hide swiper-btn-side btn-icon text-dark ms-3 shadow mt-n5"
+     style="background-color: rgba(255, 255, 255, 0.4);">
+  <i class="ri-arrow-left-s-line" style="font-size: 1.5rem;"></i>
+</div>
+
+<!-- Swiper Next Button -->
+<div class="swiper-btn swiper-next swiper-disabled-hide swiper-btn-side swiper-btn-side-right btn-icon text-dark me-3 shadow mt-n5"
+     style="background-color: rgba(255, 255, 255, 0.4);">
+  <i class="ri-arrow-right-s-line ri-lg" style="font-size: 1.5rem;"></i>
+</div>
+
                     </div>
                     <!-- / Swiper Latest-->                <!-- SVG Used for Clipath on featured images above-->
                 <svg width="0" height="0">
@@ -326,14 +377,27 @@
             </div>
             <!-- / Homepage Intro-->
             <!-- Homepage Banners-->
-<h1>Best Selling</h1>
-<div class="pt-2 mb-5 mb-lg-10">
-  <div class="row g-4">
+<h1 class="px-3 fw-bold">Best Selling</h1>
+<div class="swiper-container best-selling-swiper px-3 mb-5 mb-lg-10" data-swiper data-options='{
+  "spaceBetween": 20,
+  "slidesPerView": 1.2,
+  "loop": false,
+  "breakpoints": {
+    "576": { "slidesPerView": 2.2 },
+    "768": { "slidesPerView": 3 },
+    "1024": { "slidesPerView": 4 }
+  },
+  "navigation": {
+    "nextEl": ".best-selling-next",
+    "prevEl": ".best-selling-prev"
+  }
+}'>
+  <div class="swiper-wrapper">
     {% for product in featured_products %}
-    <div class="col-12 col-md-6 col-xl-3 d-flex" data-aos="fade-up">
+    <div class="swiper-slide">
       <a href="{% url 'product' pk=product.id %}" class="card position-relative overflow-hidden text-decoration-none w-100">
         <picture class="position-relative z-index-10 d-block bg-light">
-          <img class="w-100 rounded" src="{{ product.image.url }}" alt="{{ product.name }}">
+          <img class="fixed-square-img w-100 rounded" src="{{ product.image.url }}" alt="{{ product.name }}">
         </picture>
         <div class="card-overlay position-absolute bottom-0 start-0 w-100 p-3" style="background-color: rgba(192, 189, 189, 0.4);">
           <p class="text-white fw-bolder mb-0 text-dark text-center">{{ product.name }}</p>
@@ -342,8 +406,14 @@
     </div>
     {% endfor %}
   </div>
+
+  <div class="swiper-btn swiper-prev best-selling-prev btn-icon bg-white text-dark ms-3 shadow mt-n5">
+  <i class="ri-arrow-left-s-line" style="font-size: 1.5rem;"></i>
 </div>
 
+<div class="swiper-btn swiper-next best-selling-next btn-icon bg-white text-dark me-3 shadow mt-n5">
+  <i class="ri-arrow-right-s-line" style="font-size: 1.5rem;"></i>
+</div>
 <!-- / Homepage Banners-->
 
             <!-- Instagram-->
@@ -358,6 +428,7 @@
                 data-options='{
                     "spaceBetween": 20,
                     "loop": false,
+                    "nested": true,
                     "autoplay": {
                       "delay": 5000,
                       "disableOnInteraction": false
@@ -382,7 +453,7 @@
                       <div class="swiper-slide flex-column">
                         <picture>
                           <img
-                            class="rounded shadow-sm img-fluid"
+                            class="fixed-square-img rounded shadow-sm img-fluid"
                             data-zoomable
                             src="{{ img.image.url }}"
                             alt="{{ img.alt_text }}">

@@ -98,7 +98,7 @@
                 <small class="text-muted">Size: {{ item.size }} | Qty: {{ item.quantity }}</small>
               </div>
             </div>
-            <div class="text-end fw-semibold">₹{{ item.get_total }}</div>
+            <div class="text-end fw-semibold">₹{{ item.get_total|default:"0.00"  }}</div>
           </li>
         {% endfor %}
       </ul>

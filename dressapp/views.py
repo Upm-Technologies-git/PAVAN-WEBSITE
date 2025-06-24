@@ -16,10 +16,10 @@ from .forms import ReviewForm
 from django.db.models import Avg
 from django.views.decorators.cache import never_cache
 import re
-
+from collections import namedtuple
 from .models import (
     Product, ContactUs, Customer, Order, OrderItem,
-    ShippingAddress, Newsletter,  Banner, FeaturedCategory, InstagramImage,Review
+    ShippingAddress, Newsletter,  Banner, FeaturedCategory, InstagramImage,Review,SizeOption,ProductSize
 )
 
 # Homepage
@@ -27,7 +27,7 @@ from .models import (
 def index(request):
     banners = Banner.objects.filter(active=True).order_by('order')
     featured_categories = FeaturedCategory.objects.filter(active=True).order_by('order')
-    featured_products = Product.objects.filter(is_featured=True)[:4]
+    featured_products = Product.objects.filter(is_featured=True)
     instagram_images = InstagramImage.objects.filter(active=True).order_by('order')
     return render(request, "index.html", {
         'banners': banners,
@@ -91,13 +91,22 @@ def register(request):
 
 def product(request, pk):
     product = get_object_or_404(Product, pk=pk)
-    sizes = ['S', 'SM', 'M', 'L', 'XL', 'XXL']
     related_products = Product.objects.filter(category=product.category).exclude(id=product.id)[:10]
     reviews = Review.objects.filter(product=product).order_by('-rating', '-created_at')
     review_form = ReviewForm()
     average_rating = reviews.aggregate(avg=Avg('rating'))['avg'] or 0
     average_rating = round(average_rating, 1)
 
+    # Fetch ProductSize availability
+    product_sizes = ProductSize.objects.filter(product=product).select_related('size')
+    available_sizes = {ps.size.code: ps.is_available for ps in product_sizes}
+
+    # Build enhanced size list with availability
+    SizeDisplay = namedtuple('SizeDisplay', ['code', 'is_available'])
+    sizes = [
+        SizeDisplay(size.code, available_sizes.get(size.code, False))
+        for size in SizeOption.objects.all()
+    ]
 
     if request.method == 'POST':
         if request.user.is_authenticated:
@@ -113,13 +122,12 @@ def product(request, pk):
 
     return render(request, 'product.html', {
         'product': product,
-        'sizes': sizes,
+        'sizes': sizes,  # now has .code and .is_available
         'related_products': related_products,
         'reviews': reviews,
         'average_rating': average_rating,
         'review_form': review_form,
     })
-
 
 # Forgot Password View
 def forgot(request):
@@ -129,6 +137,7 @@ def forgot(request):
 def checkout(request):
     order = None
     items = []
+
     if request.user.is_authenticated:
         try:
             customer = request.user.customer
@@ -136,6 +145,9 @@ def checkout(request):
             items = order.orderitem_set.all()
         except Customer.DoesNotExist:
             messages.error(request, "No customer profile found.")
+            customer = None  # safely define customer as None if not found
+    else:
+        customer = None
 
     return render(request, "checkout.html", {"items": items, "order": order})
 
@@ -199,6 +211,9 @@ def process_order(request):
     customer = request.user.customer
     order, created = Order.objects.get_or_create(customer=customer, complete=False)
 
+    if order.get_cart_total == 0:
+        return JsonResponse({'error': 'Cannot place order with total ₹0'}, status=400)
+
     order.user = request.user
     order.complete = True
     order.payment_method = "COD"
@@ -227,7 +242,6 @@ def process_order(request):
         )
 
     return JsonResponse({'success': True, 'order_number': order.order_number})
-
 # Payment Processing
 def process_payment(request):
     if request.method == "POST":
@@ -237,7 +251,9 @@ def process_payment(request):
             try:
                 customer = request.user.customer
                 order, created = Order.objects.get_or_create(customer=customer, complete=False)
-
+                if order.get_cart_total == 0:
+                    messages.error(request, "Cannot place order with total ₹0")
+                    return redirect("checkout_payment")
                 order.payment_method = "Cash on Delivery"
                 order.status = "Pending"
                 order.complete = True
@@ -280,11 +296,20 @@ def order_success(request, order_number):
     return render(request, 'success.html', {'order': order})
 
 # Profile Update
+# Profile Update
 @login_required
 @never_cache
 def profile(request):
-    customer = request.user.customer
-    orders = Order.objects.filter(customer=customer).order_by('-date_ordered')
+    # Ensure the customer profile exists
+    customer, created = Customer.objects.get_or_create(
+        user=request.user,
+        defaults={
+            'name': f"{request.user.first_name} {request.user.last_name}".strip(),
+            'email': request.user.email,
+        }
+    )
+
+    orders = Order.objects.filter(customer=customer, complete=True).order_by('-date_ordered')
 
     if request.method == 'POST':
         first_name = request.POST.get('first_name')
@@ -296,6 +321,7 @@ def profile(request):
         user.last_name = last_name
         user.save()
 
+        customer.name = f"{first_name} {last_name}".strip()
         customer.phone = phone
         customer.save()
 
